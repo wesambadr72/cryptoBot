@@ -1,7 +1,7 @@
 from utils.logging import logger
 from datetime import datetime
-from binance_api import get_all_prices
-from db import save_price, get_old_price, already_alerted, save_alert
+from utils.binance_api import get_all_prices
+from setup_database import save_price, get_old_price, already_alerted, save_alert
 from handlers import CHAT_ID
 from setup_database import load_watched_coins
 
