@@ -1,34 +1,22 @@
 # Core Dependencies
-python-telegram-bot
-nest-asyncio
-APScheduler
-asyncio
+python-telegram-bot==22.5
+nest-asyncio==1.6.0
+APScheduler==3.11.0
 
 # RSS Feed Parsing
-feedparser
+feedparser==6.0.12
 
 # AI/ML for Sentiment Analysis
-transformers
-torch
+transformers==4.57.0
+torch==2.8.0
 
 # Binance API
-python-binance
+python-binance==1.0.29
 
 # Environment Variables
-python-dotenv
-
-# Database (comes with Python but explicitly listed)
-# sqlite3 is built-in
+python-dotenv==1.1.1
 
 # Testing
-pytest
-pytest-asyncio
-pytest-mock
-
-os
-re
-datetime
-collections
-sys
-
-hashlib
+pytest==8.4.2
+pytest-asyncio==1.2.0
+pytest-mock==3.15.1
