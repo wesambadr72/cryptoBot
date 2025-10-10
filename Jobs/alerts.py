@@ -7,7 +7,7 @@ from setup_database import load_watched_coins
 
 async def check_prices(context):
     if not CHAT_ID:
-        logger.warning("No chat ID available")
+        logger.warning("CHAT_ID is not set. Cannot send alert message.")
         return
 
     try:

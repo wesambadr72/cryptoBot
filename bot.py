@@ -5,7 +5,7 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Mess
 from config import BOT_TOKEN, COINS_TO_WATCH
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
-# from Jobs.news import news_job
+from Jobs.news import news_job
 # from Jobs.portfolio import portfolio_job
 # from Jobs.stoploss import stoploss_job
 from utils.logging import logger
@@ -69,8 +69,8 @@ async def main():
 
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_prices, "interval", minutes=15, args=[app])
-    # scheduler.add_job(news_job, "interval", hours=1, args=[app])
-    # scheduler.add_job(portfolio_job, "interval", hours=2, args=[app])
+    scheduler.add_job(news_job, "interval", hours=1, args=[app])
+    # scheduler.add_job(portfolio_job, "interval", days=1, args=[app])
     # scheduler.add_job(stoploss_job, "interval", minutes=10, args=[app])
     logger.info("Scheduler is starting...")
     scheduler.start()

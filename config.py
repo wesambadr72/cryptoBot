@@ -12,7 +12,7 @@ if not BOT_TOKEN:
     raise ValueError("TELEGRAM_TOKEN is not set in .env file")
 
 from setup_database import load_watched_coins, add_coin, remove_coin
-
+#ALERTS
 # قائمة العملات المراد مراقبتها
 COINS_TO_WATCH = load_watched_coins()
 
@@ -32,3 +32,13 @@ if not COINS_TO_WATCH:
     for coin in initial_coins:
         add_coin(coin)
     COINS_TO_WATCH = load_watched_coins()
+
+
+#NEWS
+
+RSS_FEEDS = [
+    "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "https://cointelegraph.com/rss",
+    "https://decrypt.co/feed",
+    "https://cryptoslate.com/feed"
+]

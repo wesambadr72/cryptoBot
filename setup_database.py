@@ -2,7 +2,7 @@ import sqlite3
 import os
 from datetime import datetime
 
-DB_FILE = "crypto_prices.db"
+DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "crypto_prices.db")
 
 def get_connection():
     return sqlite3.connect(DB_FILE)
