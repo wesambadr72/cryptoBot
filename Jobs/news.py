@@ -166,7 +166,9 @@ async def news_job(context):
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
                     f"🔍 شعور الخبر : {safe_sentiment}\n"
-                    f"📊 احتمالية شعور الخبر : {safe_confidence}\n"
+                    f"📊 احتمالية شعور الخبر : {safe_confidence} 🟢 \n"
+                    if safe_sentiment == "Positive"
+                    else f"📊 احتمالية شعور الخبر : {safe_confidence} 🔴 \n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 
@@ -179,7 +181,6 @@ async def news_job(context):
                             photo=news['image_url'],
                             caption=caption,
                             parse_mode="HTML"
-                            # ✅ لا تضع disable_web_page_preview هنا!
                         )
                     else:
                         # إرسال رسالة نصية بدون صورة

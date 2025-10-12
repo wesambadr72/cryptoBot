@@ -27,9 +27,10 @@ async def check_prices(context):
 
                 price_change = calculate_price_change(old_price, current_price)
                 if price_change >= 1.3 and not already_alerted(coin):
-                    message = f"🚨 تنبيه! {coin}\n"
-                    message += f"السعر السابق: {old_price:.8f}\n"
-                    message += f"السعر الحالي: {current_price:.8f}\n"
+                    message = f"🚨 تنبيه!\n"
+                    message += f"العملة: {coin}\n"
+                    message += f"السعر السابق: {old_price:.5f}\n"
+                    message += f"السعر الحالي: {current_price:.5f}\n"
                     message += f"نسبة التغير: {price_change:.2f}%"
 
                     await context.bot.send_message(chat_id=chat_id, text=message)

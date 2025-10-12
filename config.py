@@ -19,14 +19,42 @@ COINS_TO_WATCH = load_watched_coins()
 # إذا كانت القائمة فارغة، أضف العملات الافتراضية
 if not COINS_TO_WATCH:
     initial_coins = [
-        'OGUSDT', 'API3USDT', 'ZENUSDT', 'IDEXUSDT', 'HUMAUSDT',
-        'DOLOUSDT', 'PUNDIXUSDT', 'ARBUSDT', 'PENDLEUSDT', 'RAYUSDT', 
-        'WLDUSDT', 'LISTAUSDT', 'TNSRUSDT', 'GALAUSDT', 'XLMUSDT',
-        'ETHFIUSDT', 'EIGENUSDT', 'TWTUSDT', 'JTOUSDT', 'NEARUSDT',
-        'FILUSDT', 'LDOUSDT', 'IMXUSDT', 'STXUSDT', 'FETUSDT', 
-        'SCRTUSDT', 'CFXUSDT', 'GRTUSDT', 'DUSKUSDT', 'NKNUSDT', 
-        'CELRUSDT', 'DEXEUSDT', 'APTUSDT', 'NEOUSDT', 'SKYUSDT'
+        # Top 25 - العملات الأساسية (القيمة السوقية العالية)
+        'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT',
+        'ADAUSDT', 'DOGEUSDT', 'TRXUSDT', 'TONUSDT', 'LINKUSDT',
+        'MATICUSDT', 'DOTUSDT', 'LTCUSDT', 'AVAXUSDT', 'SHIBUSDT',
+        'UNIUSDT', 'ATOMUSDT', 'APTUSDT', 'FILUSDT', 'INJUSDT',
+        'NEARUSDT', 'ARBUSDT', 'OPUSDT', 'SUIUSDT', 'HBARUSDT',
+        
+        # 26-50 - عملات قوية متوسطة
+        'RNDRUSDT', 'STXUSDT', 'IMXUSDT', 'ALGOUSDT', 'ARUSDT',
+        'FTMUSDT', 'ICPUSDT', 'VETUSDT', 'GRTUSDT', 'RUNEUSDT',
+        'THETAUSDT', 'XLMUSDT', 'SANDUSDT', 'AXSUSDT', 'MANAUSDT',
+        'AAVEUSDT', 'EOSUSDT', 'FLOWUSDT', 'EGLDUSDT', 'MKRUSDT',
+        'CFXUSDT', 'QNTUSDT', 'BEAMUSDT', 'TIAUSDT', 'FETUSDT',
+        
+        # 51-75 - عملات Layer 2 و DeFi
+        'LDOUSDT', 'PENDLEUSDT', 'SEIUSDT', 'PYTHUSDT', 'WLDUSDT',
+        'JTOUSDT', 'JUPUSDT', 'DYDXUSDT', 'PEPEUSDT', 'FLOKIUSDT',
+        'RENDERUSDT', 'AGIXUSDT', 'TNSRUSDT', 'GALAUSDT', 'CHZUSDT',
+        'ONEUSDT', 'ZILUSDT', 'ENJUSDT', 'COMPUSDT', 'YFIUSDT',
+        'SNXUSDT', 'CRVUSDT', 'BNTUSDT', 'KAVAUSDT', 'FXSUSDT',
+        
+        # 76-100 - عملات واعدة و Gaming/Metaverse
+        'GMXUSDT', 'BLURUSDT', 'WIFUSDT', 'ACEUSDT', 'PIXELUSDT',
+        'PORTALUSDT', 'XAIUSDT', 'ALTUSDT', 'IQUSDT', 'MINAUSDT',
+        'GALUSDT', 'PEOPLEUSDT', 'FLMUSDT', 'ORDIUSDT', '1000SATSUSDT',
+        'ETHFIUSDT', 'EIGENUSDT', 'LISTAUSDT', 'ZENUSDT', 'ROSEUSDT',
+        'LPTUSDT', 'BANDUSDT', 'CELRUSDT', 'OGNUSDT', 'COTIUSDT',
+        
+        # 101-125 - عملات إضافية متنوعة
+        'CKBUSDT', 'OCEANUSDT', 'ZRXUSDT', 'NMRUSDT', 'BALUSDT',
+        'STORJUSDT', 'RLCUSDT', 'AUDIOUSDT', 'CTSIUSDT', 'AKROUSDT',
+        'RAYUSDT', 'C98USDT', 'MASKUSDT', 'ATAUSDT', 'DUSKUSDT',
+        'CHRUSDT', 'BTCSTUSDT', 'TRUUSDT', 'SLPUSDT', 'VIDTUSDT',
+        'WAXPUSDT', 'ARPAUSDT', 'LRCUSDT', 'PUNDIXUSDT', 'SUPERUSDT'
     ]
+    
 
     for coin in initial_coins:
         add_coin(coin)

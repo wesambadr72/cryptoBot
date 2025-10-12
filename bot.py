@@ -2,7 +2,7 @@ import asyncio
 import nest_asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
-from config import BOT_TOKEN, COINS_TO_WATCH
+from config import BOT_TOKEN
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
 from Jobs.news import news_job
