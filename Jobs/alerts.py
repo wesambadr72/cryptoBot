@@ -3,7 +3,7 @@ from datetime import datetime
 from utils.binance_api import get_all_prices
 from setup_database import save_price, get_old_price, already_alerted, save_alert
 from setup_database import load_watched_coins
-from utils.helpers import price_change
+from utils.helpers import price_change as calculate_price_change
 
 async def check_prices(context):
     chat_id = context.bot_data.get('chat_id')
@@ -25,7 +25,7 @@ async def check_prices(context):
                 if not old_price:
                     continue
 
-                price_change = price_change(old_price, current_price)
+                price_change = calculate_price_change(old_price, current_price)
                 if price_change >= 1.3 and not already_alerted(coin):
                     message = f"🚨 تنبيه! {coin}\n"
                     message += f"السعر السابق: {old_price:.8f}\n"

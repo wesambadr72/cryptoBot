@@ -19,16 +19,15 @@ COINS_TO_WATCH = load_watched_coins()
 # إذا كانت القائمة فارغة، أضف العملات الافتراضية
 if not COINS_TO_WATCH:
     initial_coins = [
-        'ZBCNUSDT', 'HUSDT', 'OGUSDT', 'ELXUSDT', 'ICEUSDT',
-        'API3USDT', 'ZENUSDT', 'LIONUSDT', 'IDEXUSDT', 'HUMAUSDT',
-        'DOLOUSDT', 'ENATUSDT', 'AUSDT', 'AVEOUSDT', 'LQTYUSDT',
-        'PUNDIXUSDT', 'ARBUSDT', 'PENDLEUSDT', 'RAYUSDT', 'WLDUSDT',
-        'LISTAUSDT', 'TNSRUSDT', 'GALAUSDT', 'XLMUSDT', 'LAUSDT',
-        'ETHFIUSDT', 'EIGENUSDT', 'TWTUSDT', 'JTOUSDT', 'AWEUSDT',
-        'NEARUSDT','FILUSDT', 'LDOUSDT', 'IMXUSDT', 'STXUSDT',
-        'FETUSDT', 'SCRTUSDT', 'CFXUSDT', 'GRTUSDT', 'DUSKUSDT',
-        'NKNUSDT', 'CELRUSDT', 'DEXEUSDT', 'APTUSDT', 'NEOUSDT', 'SKYUSDT'
+        'OGUSDT', 'API3USDT', 'ZENUSDT', 'IDEXUSDT', 'HUMAUSDT',
+        'DOLOUSDT', 'PUNDIXUSDT', 'ARBUSDT', 'PENDLEUSDT', 'RAYUSDT', 
+        'WLDUSDT', 'LISTAUSDT', 'TNSRUSDT', 'GALAUSDT', 'XLMUSDT',
+        'ETHFIUSDT', 'EIGENUSDT', 'TWTUSDT', 'JTOUSDT', 'NEARUSDT',
+        'FILUSDT', 'LDOUSDT', 'IMXUSDT', 'STXUSDT', 'FETUSDT', 
+        'SCRTUSDT', 'CFXUSDT', 'GRTUSDT', 'DUSKUSDT', 'NKNUSDT', 
+        'CELRUSDT', 'DEXEUSDT', 'APTUSDT', 'NEOUSDT', 'SKYUSDT'
     ]
+
     for coin in initial_coins:
         add_coin(coin)
     COINS_TO_WATCH = load_watched_coins()
