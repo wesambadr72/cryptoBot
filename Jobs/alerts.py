@@ -2,11 +2,11 @@ from utils.logging import logger
 from datetime import datetime
 from utils.binance_api import get_all_prices
 from setup_database import save_price, get_old_price, already_alerted, save_alert
-from handlers import CHAT_ID
 from setup_database import load_watched_coins
 
 async def check_prices(context):
-    if not CHAT_ID:
+    chat_id = context.bot_data.get('chat_id')
+    if not chat_id:
         logger.warning("CHAT_ID is not set. Cannot send alert message.")
         return
 
@@ -31,7 +31,7 @@ async def check_prices(context):
                     message += f"السعر الحالي: {current_price:.8f}\n"
                     message += f"نسبة التغير: {price_change:.2f}%"
 
-                    await context.bot.send_message(chat_id=CHAT_ID, text=message)
+                    await context.bot.send_message(chat_id=chat_id, text=message)
                     save_alert(coin, old_price, current_price, price_change)
 
             except Exception as e:

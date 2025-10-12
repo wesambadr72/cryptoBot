@@ -2,11 +2,8 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-CHAT_ID = None
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global CHAT_ID
-    CHAT_ID = update.effective_chat.id
+    context.bot_data['chat_id'] = update.effective_chat.id
     await update.message.reply_text(
         "هلا! في بوت المساعد للكريبتو 🚀\n"
         "الأوامر:/alerts\n/news\n/portfolio\n/trade\n/help"

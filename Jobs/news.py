@@ -2,7 +2,6 @@ from utils.logging import logger
 import feedparser
 import hashlib
 from datetime import datetime
-from handlers import CHAT_ID
 from config import RSS_FEEDS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
@@ -90,7 +89,8 @@ async def news_job(context):
     الوظيفة الرئيسية لجلب وتحليل الأخبار
     -------------------------
     """
-    if not CHAT_ID: 
+    chat_id = context.bot_data.get('chat_id')
+    if not chat_id: 
         logger.warning("CHAT_ID is not set. Cannot send news message.") 
         return [] 
 
@@ -106,20 +106,20 @@ async def news_job(context):
             safe_title = escape_markdown(news['title']) 
             safe_summary = escape_markdown(news['summary']) 
             if len(safe_summary) > 1000: 
-                safe_summary = safe_summary[:1000] + "\\.\\.\\." 
+                safe_summary = safe_summary[:1000] + "\.\.\." 
             
-            message = ( 
-                f"🗞 العنوان : *{safe_title}*\n\n" 
-                f"📅 تاريخ النشر : {news['published']}\n" 
-                f"📰 {safe_summary}\n\n" 
-                f"🔍 شعور الخبر : {analysis['sentiment']}\n" 
-                f"📊 احتمالية شعور الخبر : {analysis['confidence']:.2%}\n" 
-                f"🔗 [اقرأ المزيد]({news['link']})" 
-            ) 
+            message = (
+                f"🗞 العنوان : *{safe_title}*\n"
+                f"📅 تاريخ النشر : {news['published']}\n"
+                f"📰 {safe_summary}\n"
+                f"🔍 شعور الخبر : {analysis['sentiment']}\n"
+                f"📊 احتمالية شعور الخبر : {analysis['confidence']:.2%}\n"
+                f"🔗 [اقرأ المزيد]({news['link']})"
+            )
 
             try: 
                 await context.bot.send_message( 
-                    chat_id=CHAT_ID, 
+                    chat_id=chat_id, 
                     text=message, 
                     parse_mode="MarkdownV2", 
                     disable_web_page_preview=True 
@@ -127,8 +127,9 @@ async def news_job(context):
             except Exception as e: 
                 logger.error(f"Error sending message: {e}") 
                 await context.bot.send_message( 
-                    chat_id=CHAT_ID, 
-                    text=f"{news['title']}\n{news['link']}" 
+                    chat_id=chat_id, 
+                    text=f"{news['title']}\n"
+                    f"{news['link']}\n"
                 ) 
 
         return news_list 
