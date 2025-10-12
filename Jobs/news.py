@@ -106,7 +106,7 @@ async def news_job(context):
             safe_title = escape_markdown(news['title']) 
             safe_summary = escape_markdown(news['summary']) 
             if len(safe_summary) > 1000: 
-                safe_summary = safe_summary[:1000] + "\.\.\." 
+                safe_summary = safe_summary[:1000] + "\\.\\.\\." 
             
             message = (
                 f"🗞 العنوان : *{safe_title}*\n"

@@ -1,6 +1,6 @@
-from handlers import CHAT_ID
 
 async def portfolio_job(context):
-    if not CHAT_ID:
+    chat_id = context.bot_data.get('chat_id')
+    if not chat_id:
         return
-    await context.bot.send_message(chat_id=CHAT_ID, text="📊 تحديث المحفظة...")
+    await context.bot.send_message(chat_id=chat_id, text="📊 تحديث المحفظة...")
