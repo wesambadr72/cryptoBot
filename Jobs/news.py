@@ -166,9 +166,7 @@ async def news_job(context):
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
                     f"🔍 شعور الخبر : {safe_sentiment}\n"
-                    f"📊 احتمالية شعور الخبر : {safe_confidence} 🟢 \n"
-                    if safe_sentiment == "Positive"
-                    else f"📊 احتمالية شعور الخبر : {safe_confidence} 🔴 \n"
+                    f"📊 احتمالية شعور الخبر :{safe_confidence} {'🔴' if safe_sentiment == 'Negative' else '🟢'}\n "
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 
