@@ -161,7 +161,7 @@ async def news_job(context):
 
                 # ترجمة العنوان إلى العربية
                 try:
-                    title_ar = translator.translate(original_title, dest='ar').text
+                    title_ar = (await translator.translate(original_title, dest='ar')).text
                 except Exception as e:
                     title_ar = '' #يحذف النص بدون مشاكل و يكمل طبيعي
                     logger.error(f"Error in translating title to Arabic: {e}")
@@ -172,7 +172,7 @@ async def news_job(context):
                 safe_title_en = escape_html(original_title)
                 safe_title_ar = escape_html(title_ar) if title_ar else '' #  يتاكد إذا كان فارغًا، سيكون فارغًا أيضًا 
 
-                summary_text = strip_tags(news.get('summary',''))
+                summary_text = news['summary']
                 safe_summary = escape_html(summary_text)
                 
                 # تقليل الملخص للصور (caption محدود بـ 1024 حرف)
@@ -186,11 +186,11 @@ async def news_job(context):
                 safe_confidence = f"{analysis['confidence']:.2%}"
                 safe_link = news['link']  # لا نحتاج escape للرابط داخل HTML tag
 
-                title_section = f"🗞 العنوان : <b>{safe_title_ar}</b>\n <b>{safe_title_en}</b>\n" if safe_title_ar else f"🗞 العنوان : <b>{safe_title_en}</b>\n"
+                title_section = f"<b>{safe_title_ar}</b>\n <b>{safe_title_en}</b>\n" if safe_title_ar else f"<b>{safe_title_en}</b>\n"
 
                 # بناء الرسالة بصيغة HTML
                 caption = (
-                    f"🗞 العنوان : <b>{title_section}</b>\n"
+                    f"🗞 العنوان : {title_section}\n"
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
                     f"🔍 شعور الخبر : {safe_sentiment} {emoji_status}\n"
