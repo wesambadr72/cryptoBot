@@ -5,6 +5,9 @@ from setup_database import save_price, get_old_price, already_alerted, save_aler
 from setup_database import load_watched_coins
 from utils.helpers import price_change as calculate_price_change
 
+def TraView_url(symbol: str) -> str:
+    return f"https://www.tradingview.com/symbols/{symbol}"
+
 async def check_prices(context):
     chat_id = context.bot_data.get('chat_id')
     if not chat_id:
@@ -27,14 +30,20 @@ async def check_prices(context):
 
                 price_change = calculate_price_change(old_price, current_price)
                 if price_change >= 1.3 and not already_alerted(coin):
-                    message = f"🚨 تنبيه!\n"
-                    message += f"العملة: {coin}\n"
-                    message += f"السعر السابق: {old_price:.5f}\n"
-                    message += f"السعر الحالي: {current_price:.5f}\n"
-                    message += f"نسبة التغير: {price_change:.2f}%"
+                    # تحويل العملة إلى صيغة TradingView link
+                    tv_url = TraView_url(coin)
+                    coin_link = f'<a href="{tv_url}">{coin}</a>'
+
+                    message = (
+                        f"🚨 تنبيه!\n"
+                        f"العملة: {coin_link}\n"
+                        f"السعر السابق: {old_price:.5f}\n"
+                        f"السعر الحالي: {current_price:.5f}\n"
+                        f"نسبة التغير: {price_change:.2f}%\n"
+                    )
 
                     await context.bot.send_message(chat_id=chat_id, text=message)
-                    save_alert(coin, old_price, current_price, price_change)
+                    save_alert(coin, old_price, current_price, price_change, parse_mode='HTML')
 
             except Exception as e:
                 logger.error(f"Error processing {coin}: {str(e)}")

@@ -1,16 +1,18 @@
 from utils.logging import logger
-import feedparser
-import hashlib
 from datetime import datetime
 from config import RSS_FEEDS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from googletrans import Translator
+import email.utils as eut
+import hashlib
+import feedparser
 import torch
 import asyncio
 import html
 import re
 
 
-
+translator = Translator()
 news_lock = asyncio.Lock()
 
 
@@ -30,11 +32,12 @@ seen_news = set()
 
 
 # Function to escape HTML special characters
+TAG_RE = re.compile(r'<[^>]+>')
 def escape_html(text: str) -> str:
     """
     تهريب الأحرف الخاصة في HTML
     """
-    return html.escape(text)
+    return TAG_RE.sub('', html.escape(text))
 
 
 
@@ -52,6 +55,7 @@ async def fetch_news_from_rss():
             for entry in feed.entries:
                 uniq_id = hashlib.md5((entry.title + entry.link).encode()).hexdigest()
                 if uniq_id not in seen_news:
+
                     image_url = None
                     if 'media_content' in entry and entry['media_content']:
                         for media in entry['media_content']:
@@ -71,10 +75,18 @@ async def fetch_news_from_rss():
                             image_url = img_match.group(1)
 
 
+                    # Convert published time to 12-hour format
+                    if entry.get('published_parsed'):
+                        dt = datetime(*entry.published_parsed[:6])
+                    else:
+                        dt = datetime.fromtimestamp(eut.mktime_tz(eut.parsedate_tz(entry.get('published', ''))))
+
+                    published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
+                    
                     news_list.append({
                         "title": entry.title,
                         "link": entry.link,
-                        "published": entry.get("published") or "Time of publishing NOT FOUND",
+                        "published": published_12h or "Time of publishing NOT FOUND",
                         "summary": entry.summary,
                         "image_url": image_url,
                     })
@@ -100,7 +112,7 @@ async def analyze_news_with_ProsusAI_finbert_ai(news):
                  return_tensors="pt", 
                  truncation=True, 
                  padding=True, 
-                 max_length=256 
+                 max_length=512
              ) 
              with torch.no_grad(): 
                  outputs = model(**inputs) 
@@ -145,28 +157,44 @@ async def news_job(context):
 
 
             for news, analysis in zip(news_list, results): 
+                original_title = news.get('title','') # الحصول على العنوان الأصلي
+
+                # ترجمة العنوان إلى العربية
+                try:
+                    title_ar = translator.translate(original_title, dest='ar').text
+                except Exception as e:
+                    title_ar = '' #يحذف النص بدون مشاكل و يكمل طبيعي
+                    logger.error(f"Error in translating title to Arabic: {e}")
+
+
+
                 # تهريب النصوص باستخدام HTML
-                safe_title = escape_html(news['title']) 
-                safe_summary = escape_html(news['summary'])
+                safe_title_en = escape_html(original_title)
+                safe_title_ar = escape_html(title_ar) if title_ar else '' #  يتاكد إذا كان فارغًا، سيكون فارغًا أيضًا 
+
+                summary_text = strip_tags(news.get('summary',''))
+                safe_summary = escape_html(summary_text)
                 
                 # تقليل الملخص للصور (caption محدود بـ 1024 حرف)
                 if len(safe_summary) > 600:  
                     safe_summary = safe_summary[:600] + "..." 
+
+                emoji_status = "🔴" if analysis['sentiment'] == "Negative" else ("🟢" if analysis['sentiment'] == "Positive" else "⚪")
                 
                 safe_published = escape_html(news['published'])
                 safe_sentiment = escape_html(analysis['sentiment'])
                 safe_confidence = f"{analysis['confidence']:.2%}"
                 safe_link = news['link']  # لا نحتاج escape للرابط داخل HTML tag
 
-
+                title_section = f"🗞 العنوان : <b>{safe_title_ar}</b>\n <b>{safe_title_en}</b>\n" if safe_title_ar else f"🗞 العنوان : <b>{safe_title_en}</b>\n"
 
                 # بناء الرسالة بصيغة HTML
                 caption = (
-                    f"🗞 العنوان : <b>{safe_title}</b>\n"
+                    f"🗞 العنوان : <b>{title_section}</b>\n"
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
-                    f"🔍 شعور الخبر : {safe_sentiment}\n"
-                    f"📊 احتمالية شعور الخبر :{safe_confidence} {'🔴' if safe_sentiment == 'Negative' else '🟢'}\n "
+                    f"🔍 شعور الخبر : {safe_sentiment} {emoji_status}\n"
+                    f"📊 احتمالية شعور الخبر :{safe_confidence}\n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 

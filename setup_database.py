@@ -81,6 +81,7 @@ def already_alerted(symbol, minutes=15):
     conn.close()
     return result is not None
 
+# دالة لحفظ التنبيه
 def save_alert(symbol, price_before, price_after, percentage_change):
     conn = get_connection()
     cursor = conn.cursor()
