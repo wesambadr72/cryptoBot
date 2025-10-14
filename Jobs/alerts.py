@@ -42,8 +42,8 @@ async def check_prices(context):
                         f"نسبة التغير: {price_change:.2f}%\n"
                     )
 
-                    await context.bot.send_message(chat_id=chat_id, text=message)
-                    save_alert(coin, old_price, current_price, price_change, parse_mode='HTML')
+                    await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='HTML')
+                    save_alert(coin, old_price, current_price, price_change)
 
             except Exception as e:
                 logger.error(f"Error processing {coin}: {str(e)}")
