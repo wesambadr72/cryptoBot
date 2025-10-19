@@ -54,7 +54,10 @@ async def fetch_news_from_rss():
             feed = feedparser.parse(feed_url)
             for entry in feed.entries:
                 uniq_id = hashlib.md5((entry.title + entry.link).encode()).hexdigest()
-                if uniq_id not in seen_news:
+            if is_news_processed(uniq_id):
+                logger.info(f"News already processed: {entry.title}")
+                continue
+            if uniq_id not in seen_news:
 
                     image_url = None
                     if 'media_content' in entry and entry['media_content']:
@@ -84,6 +87,7 @@ async def fetch_news_from_rss():
                     published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
                     
                     news_list.append({
+                        "uniq_id": uniq_id,
                         "title": entry.title,
                         "link": entry.link,
                         "published": published_12h or "Time of publishing NOT FOUND",
@@ -179,7 +183,7 @@ async def news_job(context):
                 if len(safe_summary) > 600:  
                     safe_summary = safe_summary[:600] + "..." 
 
-                # emoji_status = "🔴" if analysis['sentiment'] == "negative" else ("🟢" if analysis['sentiment'] == "positive" else "⚪")
+                # emoji_status = "🔴" if analysis['sentiment'] == "negative" else ("🟢" if analysis['sentiment'] == "positive" else "⚪") طريقة اخرى لكن بجرب switch 
                 switch = {
                     "negative": "🔴",
                     "positive": "🟢",
@@ -216,12 +220,13 @@ async def news_job(context):
                         )
                     else:
                         # إرسال رسالة نصية بدون صورة
-                        await context.bot.send_message( 
-                            chat_id=chat_id, 
-                            text=caption, 
-                            parse_mode="HTML", 
+                        await context.bot.send_message(
+                            chat_id=chat_id,
+                            text=caption,
+                            parse_mode="HTML",
                             disable_web_page_preview=True  # ✅ فقط في send_message
-                        ) 
+                        )
+                    mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
                 except Exception as e: 
                     logger.error(f"Error sending message: {e}") 
                     # في حالة الخطأ، إرسال رسالة بسيطة

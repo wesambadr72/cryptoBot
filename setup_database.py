@@ -41,6 +41,16 @@ def setup_database():
     )
     ''')
 
+    # جدول الأخبار المُعالجة
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS processed_news (
+        uniq_id TEXT PRIMARY KEY,
+        title TEXT,
+        link TEXT,
+        processed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -112,6 +122,23 @@ def remove_coin(symbol):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM watched_coins WHERE symbol = ?", (symbol,))
+    conn.commit()
+    conn.close()
+
+
+# دوال للتعامل مع الأخبار المُعالجة
+def is_news_processed(uniq_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT 1 FROM processed_news WHERE uniq_id = ?", (uniq_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
+def mark_news_as_processed(uniq_id, title, link):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR IGNORE INTO processed_news (uniq_id, title, link) VALUES (?, ?, ?)", (uniq_id, title, link))
     conn.commit()
     conn.close()
 
