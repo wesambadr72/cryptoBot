@@ -179,7 +179,13 @@ async def news_job(context):
                 if len(safe_summary) > 600:  
                     safe_summary = safe_summary[:600] + "..." 
 
-                emoji_status = "🔴" if analysis['sentiment'] == "Negative" else ("🟢" if analysis['sentiment'] == "Positive" else "⚪")
+                # emoji_status = "🔴" if analysis['sentiment'] == "negative" else ("🟢" if analysis['sentiment'] == "positive" else "⚪")
+                switch = {
+                    "negative": "🔴",
+                    "positive": "🟢",
+                    "neutral": "⚪",
+                }
+                emoji_status = switch.get(analysis['sentiment'], "⚪")
                 
                 safe_published = escape_html(news['published'])
                 safe_sentiment = escape_html(analysis['sentiment'])
