@@ -66,6 +66,5 @@ if not COINS_TO_WATCH:
 RSS_FEEDS = [
     "https://www.coindesk.com/arc/outboundfeeds/rss/",
     "https://cointelegraph.com/rss",
-    "https://decrypt.co/feed",
-    "https://cryptoslate.com/feed"
+    "https://decrypt.co/feed"
 ]

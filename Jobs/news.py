@@ -3,6 +3,7 @@ from datetime import datetime
 from config import RSS_FEEDS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from googletrans import Translator
+from setup_database import is_news_processed, mark_news_as_processed
 import email.utils as eut
 import hashlib
 import feedparser
@@ -33,11 +34,16 @@ seen_news = set()
 
 # Function to escape HTML special characters
 TAG_RE = re.compile(r'<[^>]+>')
-def escape_html(text: str) -> str:
+def strip_html_tags_and_unescape_entities(text: str) -> str:
     """
-    تهريب الأحرف الخاصة في HTML
+    يزيل علامات HTML ويفك تشفير كيانات HTML من النص.
     """
-    return TAG_RE.sub('', html.escape(text))
+    if not isinstance(text, str):
+        return ""
+    # فك تشفير كيانات HTML أولاً
+    unescaped_text = html.unescape(text)
+    # ثم إزالة علامات HTML
+    return TAG_RE.sub('', unescaped_text)
 
 
 
@@ -54,10 +60,10 @@ async def fetch_news_from_rss():
             feed = feedparser.parse(feed_url)
             for entry in feed.entries:
                 uniq_id = hashlib.md5((entry.title + entry.link).encode()).hexdigest()
-            if is_news_processed(uniq_id):
-                logger.info(f"News already processed: {entry.title}")
-                continue
-            if uniq_id not in seen_news:
+                if is_news_processed(uniq_id):
+                    logger.info(f"News already processed: {entry.title}")
+                    continue
+                if uniq_id not in seen_news:
 
                     image_url = None
                     if 'media_content' in entry and entry['media_content']:
@@ -91,7 +97,7 @@ async def fetch_news_from_rss():
                         "title": entry.title,
                         "link": entry.link,
                         "published": published_12h or "Time of publishing NOT FOUND",
-                        "summary": entry.summary,
+                        "summary": strip_html_tags_and_unescape_entities(entry.summary if entry.summary else entry.description),
                         "image_url": image_url,
                     })
                     seen_news.add(uniq_id)
@@ -173,12 +179,20 @@ async def news_job(context):
 
 
                 # تهريب النصوص باستخدام HTML
-                safe_title_en = escape_html(original_title)
-                safe_title_ar = escape_html(title_ar) if title_ar else '' #  يتاكد إذا كان فارغًا، سيكون فارغًا أيضًا 
+                safe_title_en = strip_html_tags_and_unescape_entities(original_title)
+                safe_title_ar = strip_html_tags_and_unescape_entities(title_ar) if title_ar else '' #  يتاكد إذا كان فارغًا، سيكون فارغًا أيضًا 
 
-                summary_text = news['summary']
-                safe_summary = escape_html(summary_text)
+                summary_text = strip_html_tags_and_unescape_entities(news['summary'])
+                safe_summary = strip_html_tags_and_unescape_entities(summary_text)
                 
+                #كتابة حالة الخبر بالعربي
+                sentiment_arabic_map = {
+                    "positive": "إيجابي",
+                    "negative": "سلبي",
+                    "neutral": "محايد"
+                }
+                safe_sentiment_arabic = sentiment_arabic_map.get(analysis['sentiment'], "غير معروف")
+
                 # تقليل الملخص للصور (caption محدود بـ 1024 حرف)
                 if len(safe_summary) > 600:  
                     safe_summary = safe_summary[:600] + "..." 
@@ -191,19 +205,21 @@ async def news_job(context):
                 }
                 emoji_status = switch.get(analysis['sentiment'], "⚪")
                 
-                safe_published = escape_html(news['published'])
-                safe_sentiment = escape_html(analysis['sentiment'])
+                safe_published = strip_html_tags_and_unescape_entities(news['published'])
+                safe_sentiment = strip_html_tags_and_unescape_entities(analysis['sentiment'])
                 safe_confidence = f"{analysis['confidence']:.2%}"
                 safe_link = news['link']  # لا نحتاج escape للرابط داخل HTML tag
 
-                title_section = f"<b>{safe_title_ar}</b>\n <b>{safe_title_en}</b>\n" if safe_title_ar else f"<b>{safe_title_en}</b>\n"
+                title_section = f"<b>🇸🇦 {safe_title_ar}</b>\n <b>🇬🇧 {safe_title_en}</b>\n" if safe_title_ar else f"<b>🇬🇧 {safe_title_en}</b>\n"
 
                 # بناء الرسالة بصيغة HTML
+
                 caption = (
                     f"🗞 العنوان : {title_section}\n"
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
-                    f"🔍 شعور الخبر : {safe_sentiment} {emoji_status}\n"
+                    f"\n تحليل الخبر (news analysis) 🤖 :\n"
+                    f"🔍 شعور الخبر : {safe_sentiment} ({safe_sentiment_arabic}) {emoji_status}\n"
                     f"📊 احتمالية شعور الخبر :{safe_confidence}\n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
@@ -222,7 +238,7 @@ async def news_job(context):
                         # إرسال رسالة نصية بدون صورة
                         await context.bot.send_message(
                             chat_id=chat_id,
-                            text=caption,
+                            caption=caption,
                             parse_mode="HTML",
                             disable_web_page_preview=True  # ✅ فقط في send_message
                         )
