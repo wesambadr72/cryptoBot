@@ -39,7 +39,7 @@ async def check_prices(context):
                         f"🪙 العملة: {coin_link}\n"
                         f"السعر السابق: {old_price:.5f}\n"
                         f"السعر الحالي: {current_price:.5f}\n"
-                        f"📊نسبة التغير: {price_change:.2f} 🟢%\n"
+                        f"📊نسبة التغير: {price_change:.2f}% 🟢\n"
                     )
 
                     await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='HTML')
