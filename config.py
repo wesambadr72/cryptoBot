@@ -51,7 +51,7 @@ if not COINS_TO_WATCH:
         'CKBUSDT', 'OCEANUSDT', 'ZRXUSDT', 'NMRUSDT', 'BALUSDT',
         'STORJUSDT', 'RLCUSDT', 'AUDIOUSDT', 'CTSIUSDT', 'AKROUSDT',
         'RAYUSDT', 'C98USDT', 'MASKUSDT', 'ATAUSDT', 'DUSKUSDT',
-        'CHRUSDT', 'BTCSTUSDT', 'TRUUSDT', 'SLPUSDT', 'VIDTUSDT',
+        'CHRUSDT', 'HOLOUSDT', 'TRUUSDT', 'SLPUSDT', 'DASHUSDT',
         'WAXPUSDT', 'ARPAUSDT', 'LRCUSDT', 'PUNDIXUSDT', 'SUPERUSDT'
     ]
     
@@ -64,7 +64,7 @@ if not COINS_TO_WATCH:
 #NEWS
 
 RSS_FEEDS = [
-    "https://www.coindesk.com/arc/outboundfeeds/rss/",
+    "https://www.coindesk.com/arc/outboundfeeds/rss",
     "https://cointelegraph.com/rss",
     "https://decrypt.co/feed"
 ]
