@@ -27,8 +27,7 @@ sentiment_labels = [model.config.id2label[i] for i in range(len(model.config.id2
 
 
 
-# list for storing seen news
-seen_news = set()
+
 
 
 
@@ -63,44 +62,43 @@ async def fetch_news_from_rss():
                 if is_news_processed(uniq_id):
                     logger.info(f"News already processed: {entry.title}")
                     continue
-                if uniq_id not in seen_news:
 
-                    image_url = None
-                    if 'media_content' in entry and entry['media_content']:
-                        for media in entry['media_content']:
-                            if media.get('type', '').startswith('image/') and media.get('url'):
-                                image_url = media['url']
-                                break
-                    elif 'enclosures' in entry and entry['enclosures']:
-                        for enclosure in entry['enclosures']:
-                            if enclosure.get('type', '').startswith('image/') and enclosure.get('url'):
-                                image_url = enclosure['url']
-                                break
-                    
-                    # Fallback: try to find an <img> tag in the summary
-                    if not image_url and entry.summary:
-                        img_match = re.search(r'<img[^>]+src=["\'](.*?)["\']', entry.summary, re.IGNORECASE)
-                        if img_match:
-                            image_url = img_match.group(1)
+                image_url = None
+                if 'media_content' in entry and entry['media_content']:
+                    for media in entry['media_content']:
+                        if media.get('type', '').startswith('image/') and media.get('url'):
+                            image_url = media['url']
+                            break
+                elif 'enclosures' in entry and entry['enclosures']:
+                    for enclosure in entry['enclosures']:
+                        if enclosure.get('type', '').startswith('image/') and enclosure.get('url'):
+                            image_url = enclosure['url']
+                            break
+                
+                # Fallback: try to find an <img> tag in the summary
+                if not image_url and entry.summary:
+                    img_match = re.search(r'<img[^>]+src=["\'](.*?)["\']', entry.summary, re.IGNORECASE)
+                    if img_match:
+                        image_url = img_match.group(1)
 
 
-                    # Convert published time to 12-hour format
-                    if entry.get('published_parsed'):
-                        dt = datetime(*entry.published_parsed[:6])
-                    else:
-                        dt = datetime.fromtimestamp(eut.mktime_tz(eut.parsedate_tz(entry.get('published', ''))))
+                # Convert published time to 12-hour format
+                if entry.get('published_parsed'):
+                    dt = datetime(*entry.published_parsed[:6])
+                else:
+                    dt = datetime.fromtimestamp(eut.mktime_tz(eut.parsedate_tz(entry.get('published', ''))))
 
-                    published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
-                    
-                    news_list.append({
-                        "uniq_id": uniq_id,
-                        "title": entry.title,
-                        "link": entry.link,
-                        "published": published_12h or "Time of publishing NOT FOUND",
-                        "summary": strip_html_tags_and_unescape_entities(entry.summary if entry.summary else entry.description),
-                        "image_url": image_url,
-                    })
-                    seen_news.add(uniq_id)
+                published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
+                
+                news_list.append({
+                    "uniq_id": uniq_id,
+                    "title": entry.title,
+                    "link": entry.link,
+                    "published": published_12h or "Time of publishing NOT FOUND",
+                    "summary": strip_html_tags_and_unescape_entities(entry.summary if entry.summary else entry.description or entry.title), #موقع coindesk ما يعطي summary او description لذلك نرسل title كا حل اخير
+                    "image_url": image_url,
+                })
+
         return news_list
     except Exception as e:
         logger.error(f"Error in fetch_news_from_rss: {e}")
