@@ -58,3 +58,6 @@ urllib3==2.5.0
 websockets==15.0.1
 yarl==1.20.1
 googletrans
+nowpayments-api==1.0.2
+flask==3.1.2
+jsonify==0.5

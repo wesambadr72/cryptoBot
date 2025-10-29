@@ -4,9 +4,13 @@ from dotenv import load_dotenv
 # تحميل المتغيرات من ملف .env
 load_dotenv()
 
-BOT_TOKEN = os.getenv("TELEGRAM_TOKEN")
+MAIN_BOT_TOKEN = os.getenv("TELEGRAM_MAIN_TOKEN")
+SUBS_BOT_TOKEN = os.getenv("TELEGRAM_SUBSCRIPTONS_TOKEN")
+SUBS_BOT_USERNAME = os.getenv("BOT_USERNAME")
 BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
 BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
+NOWPAYMENTS_API_KEY = os.getenv('NOWPAYMENTS_API_KEY')
+NOWPAYMENTS_IPN_KEY= os.getenv('NOWPAYMENTS_IPN_SECRET')
 
 if not BOT_TOKEN:
     raise ValueError("TELEGRAM_TOKEN is not set in .env file")
@@ -68,3 +72,18 @@ RSS_FEEDS = [
     "https://cointelegraph.com/rss",
     "https://decrypt.co/feed"
 ]
+
+
+PAYMENTS_PALNS={
+    "1_DAY_TRIAL":0.00,
+    "1_MONTH":13.99,
+    "3_MONTHS":26.99,
+    "6_MONTHS":47.99
+}
+
+SUPPORTED_NETWORKS = ['TON', 'BEP20']
+
+SUCCESS_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
+CANCEL_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
+
+WEBHOOK_URL = os.getenv('WEBHOOK_URL', 'https://13.61.23.253/webhook/payment')

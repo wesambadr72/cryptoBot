@@ -89,13 +89,15 @@ async def fetch_news_from_rss():
                     dt = datetime.fromtimestamp(eut.mktime_tz(eut.parsedate_tz(entry.get('published', ''))))
 
                 published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
+
+                summary_text = entry.summary or entry.description or entry.title
                 
                 news_list.append({
                     "uniq_id": uniq_id,
                     "title": entry.title,
                     "link": entry.link,
                     "published": published_12h or "Time of publishing NOT FOUND",
-                    "summary": strip_html_tags_and_unescape_entities(entry.summary if entry.summary else entry.description or entry.title), #موقع coindesk ما يعطي summary او description لذلك نرسل title كا حل اخير
+                    "summary": strip_html_tags_and_unescape_entities(summary_text), #موقع coindesk ما يعطي summary او description لذلك نرسل title كا حل اخير
                     "image_url": image_url,
                 })
 

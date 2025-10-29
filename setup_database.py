@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "crypto_prices.db")
 
@@ -50,7 +51,86 @@ def setup_database():
         processed_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
     ''')
+    #جدول المشتركين
+    cursor.execute('''
+    CREATE TABLE subscribers (
+        user_id INTEGER PRIMARY KEY,
+        username TEXT,
+        subscription_type TEXT,
+        start_date TEXT,
+        end_date TEXT,
+        is_active INTEGER,
+        payment_method TEXT,
+        payment_reference TEXT
+    )
+    ''')
 
+    # جدول المدفوعات (دفعات NOWPayments)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS payments (
+            payment_id TEXT PRIMARY KEY,
+            user_id INTEGER,
+            order_id TEXT,
+            amount REAL,
+            currency TEXT,
+            status TEXT,
+            payment_date DATETIME,
+            network TEXT
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+# إضافة مشترك جديد
+def add_subscriber(user_id, username, months, subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A'):
+    conn = get_connection()
+    cursor = conn.cursor()
+    start_date = datetime.now()
+    end_date = start_date + relativedelta(months=months)
+    cursor.execute('''
+        INSERT OR REPLACE INTO subscribers 
+        (user_id, username, subscription_type, start_date, end_date, is_active, payment_method, payment_reference)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, username, subscription_type, start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S'), 1, payment_method, payment_reference))
+    conn.commit()
+    conn.close()
+
+
+# الاستعلام عن مشترك
+def get_subscriber(user_id):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM subscribers WHERE user_id=?', (user_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result
+
+# تحديث حالة مشترك بعد دفع ناجح
+
+def activate_subscriber(user_id, months):
+    add_subscriber(user_id, None, months, subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A')
+
+
+# إضافة دفعة جديدة
+def add_payment(payment_id, user_id, order_id, amount, currency, status, network):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO payments 
+        (payment_id, user_id, order_id, amount, currency, status, payment_date, network)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (payment_id, user_id, order_id, amount, currency, status, datetime.now(), network))
+    conn.commit()
+    conn.close()
+
+#تحديث حالة الدفع
+def update_payment_status(payment_id, status):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE payments SET status=? WHERE payment_id=?
+    ''', (status, payment_id))
     conn.commit()
     conn.close()
 
