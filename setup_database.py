@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "crypto_prices.db")
+DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cryptoAssitantBot.db")
 
 def get_connection():
     return sqlite3.connect(DB_FILE)
@@ -79,6 +79,20 @@ def setup_database():
         )
     ''')
 
+    # جدول المدفوعات المعلقة (pending_payments)
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS pending_payments (
+        user_id INTEGER,
+        order_id TEXT PRIMARY KEY,
+        amount REAL,
+        currency TEXT,
+        status TEXT,
+        payment_address TEXT,
+        payment_id TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -99,7 +113,7 @@ def add_subscriber(user_id, username, months, subscription_type='premium', payme
 
 # الاستعلام عن مشترك
 def get_subscriber(user_id):
-    conn = get_conn()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM subscribers WHERE user_id=?', (user_id,))
     result = cursor.fetchone()
@@ -114,7 +128,7 @@ def activate_subscriber(user_id, months):
 
 # إضافة دفعة جديدة
 def add_payment(payment_id, user_id, order_id, amount, currency, status, network):
-    conn = get_conn()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO payments 
@@ -124,15 +138,47 @@ def add_payment(payment_id, user_id, order_id, amount, currency, status, network
     conn.commit()
     conn.close()
 
+def add_pending_payment(user_id, order_id, amount, currency, status, payment_address, payment_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO pending_payments 
+        (user_id, order_id, amount, currency, status, payment_address, payment_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (user_id, order_id, amount, currency, status, payment_address, payment_id))
+    conn.commit()
+    conn.close()
+
 #تحديث حالة الدفع
 def update_payment_status(payment_id, status):
-    conn = get_conn()
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute('''
         UPDATE payments SET status=? WHERE payment_id=?
     ''', (status, payment_id))
     conn.commit()
     conn.close()
+
+# إزالة دفعة معلقة
+def remove_pending_payment(order_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        DELETE FROM pending_payments WHERE order_id=?
+    ''', (order_id,))
+    conn.commit()
+    conn.close()
+
+def get_pending_payment(order_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT user_id, order_id, amount, currency, status, payment_address, payment_id, created_at
+        FROM pending_payments WHERE order_id=?
+    ''', (order_id,))
+    payment = cursor.fetchone()
+    conn.close()
+    return payment
 
 # دوال مساعدة للتعامل مع البيانات
 def save_price(symbol, price, timestamp=None):

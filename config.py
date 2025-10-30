@@ -12,8 +12,8 @@ BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
 NOWPAYMENTS_API_KEY = os.getenv('NOWPAYMENTS_API_KEY')
 NOWPAYMENTS_IPN_KEY= os.getenv('NOWPAYMENTS_IPN_SECRET')
 
-if not BOT_TOKEN:
-    raise ValueError("TELEGRAM_TOKEN is not set in .env file")
+if not SUBS_BOT_TOKEN:
+    raise ValueError("TELEGRAM_SUBSCRIPTONS_TOKEN is not set in .env file")
 
 from setup_database import load_watched_coins, add_coin, remove_coin
 #ALERTS

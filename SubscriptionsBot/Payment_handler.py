@@ -13,19 +13,20 @@ class PaymentHandler:
         
         
         # استخدم sandbox=True للتجربة أولاً
-        self.client = NOWPaymentsAPI(self.api_key, sandbox=False)
+        self.client = NOWPaymentsAPI(self.api_key, sandbox=True)
     
     def create_subscription_payment(self, user_id, plan_price, plan_duration):
         """إنشاء دفعة جديدة للاشتراك"""
         
         # أنشئ order_id فريد
-        order_id = generate_order_id(user_id=user_id)
-        
+        order_id = generate_order_id(user_id=user_id, plan_type='subscription', duration=plan_duration)
+
         payment = self.client.create_payment(
             price_amount=plan_price,
             price_currency='USD',
-            pay_currency='USDTTON',
+            pay_currency='USDT',
             order_id=order_id,
+            pay_network='TON',
             order_description=f'{plan_duration} شهر اشتراك',
             ipn_callback_url=WEBHOOK_URL,
             success_url=SUCCESS_URL,
@@ -36,7 +37,9 @@ class PaymentHandler:
             'payment_id': payment['payment_id'],
             'pay_address': payment['pay_address'],
             'pay_amount': payment['pay_amount'],
-            'order_id': order_id
+            'order_id':payment['order_id'],
+            'pay_currency': payment['pay_currency'],
+            'pay_network': payment['pay_network']
         }
     
     def get_payment_status(self, payment_id):

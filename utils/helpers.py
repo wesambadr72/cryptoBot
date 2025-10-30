@@ -1,6 +1,6 @@
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def price_change(old_price, new_price):
     return ((new_price - old_price) / old_price) * 100
@@ -23,3 +23,9 @@ def is_subscription_active(sub_row):
     # sub_row = (user_id, username, join_date, expiry, active)
     if not sub_row: return False
     return sub_row[4] == 1 and datetime.now() < datetime.strptime(sub_row[3], '%Y-%m-%d %H:%M:%S')
+
+
+
+def is_payment_expired(created_at, timeout_minutes=20):
+    created = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
+    return datetime.now() > created + timedelta(minutes=timeout_minutes)

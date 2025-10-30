@@ -2,7 +2,7 @@ import asyncio
 import nest_asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
-from config import BOT_TOKEN
+from config import MAIN_BOT_TOKEN
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
 from Jobs.news import news_job
@@ -10,7 +10,7 @@ from Jobs.news import news_job
 # from Jobs.stoploss import stoploss_job
 from utils.logging import logger
 from setup_database import add_coin, remove_coin, load_watched_coins
-logger.info("Bot is starting...")
+logger.info("Main Bot is starting...")
 
 
 
@@ -42,7 +42,7 @@ async def button_handler(update, context):
         context.user_data['action'] = 'remove_coin'
 
 async def main():
-    app = Application.builder().token(BOT_TOKEN).build()
+    app = Application.builder().token(MAIN_BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     logger.info("CommandHandler for 'start' added")
