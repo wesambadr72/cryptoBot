@@ -97,11 +97,16 @@ def setup_database():
     conn.close()
 
 # إضافة مشترك جديد
-def add_subscriber(user_id, username, months, subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A'):
+def add_subscriber(user_id, username, duration_value, duration_type='months', subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A'):
     conn = get_connection()
     cursor = conn.cursor()
     start_date = datetime.now()
-    end_date = start_date + relativedelta(months=months)
+    if duration_type == 'months':
+        end_date = start_date + relativedelta(months=duration_value)
+    elif duration_type == 'days':
+        end_date = start_date + relativedelta(days=duration_value)
+    else:
+        raise ValueError("duration_type must be 'months' or 'days'")
     cursor.execute('''
         INSERT OR REPLACE INTO subscribers 
         (user_id, username, subscription_type, start_date, end_date, is_active, payment_method, payment_reference)
@@ -122,8 +127,8 @@ def get_subscriber(user_id):
 
 # تحديث حالة مشترك بعد دفع ناجح
 
-def activate_subscriber(user_id, months):
-    add_subscriber(user_id, None, months, subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A')
+def activate_subscriber(user_id, months, username=None):
+    add_subscriber(user_id, username, months, duration_type='months', subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A')
 
 
 # إضافة دفعة جديدة

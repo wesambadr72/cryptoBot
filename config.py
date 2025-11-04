@@ -86,4 +86,6 @@ SUPPORTED_NETWORKS = ['TON', 'BEP20']
 SUCCESS_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
 CANCEL_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
 
-WEBHOOK_URL = os.getenv('WEBHOOK_URL', 'https://13.61.23.253/webhook/payment')
+WEBHOOK_URL = os.getenv('WEBHOOK_URL')
+
+CHANNEL_LINK = os.getenv('CHANNEL_LINK')
