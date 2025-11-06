@@ -1,5 +1,7 @@
 import random
 import string
+import html
+import re
 from datetime import datetime, timedelta
 
 def price_change(old_price, new_price):
@@ -18,14 +20,19 @@ def generate_order_id(prefix="sub", user_id=None, plan_type=None, duration=None)
 
 
 
-
-def is_subscription_active(sub_row):
-    # sub_row = (user_id, username, join_date, expiry, active)
-    if not sub_row: return False
-    return sub_row[4] == 1 and datetime.now() < datetime.strptime(sub_row[3], '%Y-%m-%d %H:%M:%S')
-
-
-
 def is_payment_expired(created_at, timeout_minutes=20):
     created = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
     return datetime.now() > created + timedelta(minutes=timeout_minutes)
+
+
+def strip_html_tags_and_unescape_entities(text: str) -> str:
+    TAG_RE = re.compile(r'<[^>]+>')
+    """
+    يزيل علامات HTML ويفك تشفير كيانات HTML من النص.
+    """
+    if not isinstance(text, str):
+        return ""
+    # فك تشفير كيانات HTML أولاً
+    unescaped_text = html.unescape(text)
+    # ثم إزالة علامات HTML
+    return TAG_RE.sub('', unescaped_text)

@@ -6,6 +6,7 @@ from config import MAIN_BOT_TOKEN
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
 from Jobs.news import news_job
+from Jobs.subscription_management import check_and_remove_expired_subscribers, send_expiration_reminders
 # from Jobs.portfolio import portfolio_job
 # from Jobs.stoploss import stoploss_job
 from utils.logging import logger
@@ -70,6 +71,8 @@ async def main():
     scheduler = AsyncIOScheduler()
     scheduler.add_job(check_prices, "interval", minutes=15, args=[app])
     scheduler.add_job(news_job, "interval", minutes=30, args=[app])
+    scheduler.add_job(check_and_remove_expired_subscribers, "interval", days=1)
+    scheduler.add_job(send_expiration_reminders, "interval", days=1)
     # scheduler.add_job(portfolio_job, "interval", days=1, args=[app])
     # scheduler.add_job(stoploss_job, "interval", minutes=10, args=[app])
     logger.info("Scheduler is starting...")

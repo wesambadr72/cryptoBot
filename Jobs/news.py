@@ -4,6 +4,7 @@ from config import RSS_FEEDS
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from googletrans import Translator
 from setup_database import is_news_processed, mark_news_as_processed
+from utils.helpers import strip_html_tags_and_unescape_entities
 import email.utils as eut
 import hashlib
 import feedparser
@@ -32,17 +33,6 @@ sentiment_labels = [model.config.id2label[i] for i in range(len(model.config.id2
 
 
 # Function to escape HTML special characters
-TAG_RE = re.compile(r'<[^>]+>')
-def strip_html_tags_and_unescape_entities(text: str) -> str:
-    """
-    يزيل علامات HTML ويفك تشفير كيانات HTML من النص.
-    """
-    if not isinstance(text, str):
-        return ""
-    # فك تشفير كيانات HTML أولاً
-    unescaped_text = html.unescape(text)
-    # ثم إزالة علامات HTML
-    return TAG_RE.sub('', unescaped_text)
 
 
 

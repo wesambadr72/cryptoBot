@@ -135,6 +135,9 @@ def activate_subscriber(user_id, months, username=None):
 def add_payment(payment_id, user_id, order_id, amount, currency, status, network):
     conn = get_connection()
     cursor = conn.cursor()
+def add_payment(payment_id, user_id, order_id, amount, currency, status, network="TON"):
+    conn = get_connection()
+    cursor = conn.cursor()
     cursor.execute('''
         INSERT INTO payments 
         (payment_id, user_id, order_id, amount, currency, status, payment_date, network)
@@ -185,6 +188,39 @@ def get_pending_payment(order_id):
     conn.close()
     return payment
 
+# دوال لإدارة الاشتراكات
+def get_expired_subscribers():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT user_id, username, payment_reference FROM subscribers
+        WHERE end_date < CURRENT_TIMESTAMP AND is_active = 1
+    ''')
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def get_subscribers_about_to_expire(days=2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT user_id, username, end_date FROM subscribers
+        WHERE end_date BETWEEN CURRENT_TIMESTAMP AND datetime(CURRENT_TIMESTAMP, ? || ' days')
+        AND is_active = 1
+    ''', (days,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def update_subscriber_status(user_id, is_active):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE subscribers SET is_active=? WHERE user_id=?
+    ''', (is_active, user_id))
+    conn.commit()
+    conn.close()
+    
 # دوال مساعدة للتعامل مع البيانات
 def save_price(symbol, price, timestamp=None):
     conn = get_connection()
@@ -272,6 +308,7 @@ def mark_news_as_processed(uniq_id, title, link):
     cursor.execute("INSERT OR IGNORE INTO processed_news (uniq_id, title, link) VALUES (?, ?, ?)", (uniq_id, title, link))
     conn.commit()
     conn.close()
+
 
 if __name__ == "__main__":
     setup_database()
