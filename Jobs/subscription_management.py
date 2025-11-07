@@ -1,6 +1,5 @@
 import sys
 import os
-import asyncio
 from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))

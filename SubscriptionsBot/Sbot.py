@@ -12,7 +12,6 @@ from config import SUBS_BOT_TOKEN, PAYMENTS_PALNS,CHANNEL_LINK
 from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment
 from datetime import datetime, timedelta
 import asyncio
-from utils import logging as utils_logging # Import logging from utils
 from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities
 from SubscriptionsBot.webhookserver import process_successful_payment
 
@@ -343,7 +342,7 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         parts = order_id.split('_')
         plan_id = parts[0]
         user_id = int(parts[1]) # التأكد من استخدام user_id الصحيح
-        duration = int(parts[2].replace('m', ''))
+        duration = int(parts[3])
 
         # استدعاء الدالة المركزية لمعالجة الدفع الناجح
         process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id)
