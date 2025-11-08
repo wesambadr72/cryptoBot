@@ -1,7 +1,7 @@
 from .alerts import *
 from .news import *
 from .portfolio import *
-from .trade import *
+from .volume import *
 
 __all__ = [
     "alerts",

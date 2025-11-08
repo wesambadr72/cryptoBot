@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from telegram import Bot
-from config import SUBS_BOT_TOKEN, CHANNEL_LINK
+from config import SUBS_BOT_TOKEN, CHANNEL_ID, CHANNEL_LINK
 from setup_database import get_expired_subscribers, get_subscribers_about_to_expire, update_subscriber_status
 from utils.logging import logger
 
@@ -24,8 +24,8 @@ async def check_and_remove_expired_subscribers():
         # payment_reference = subscriber[2] # Not used for removal from channel
         try:
             # Attempt to remove user from channel
-            await bot.ban_chat_member(chat_id=CHANNEL_LINK, user_id=user_id)
-            logger.info(f"Successfully removed user {user_id} ({username}) from channel {CHANNEL_LINK}.")
+            await bot.ban_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+            logger.info(f"Successfully removed user {user_id} ({username}) from channel {CHANNEL_ID}.")
             # Update subscriber status in DB to inactive
             update_subscriber_status(user_id, 0) # 0 for inactive
             logger.info(f"Subscriber {user_id} status updated to inactive in DB.")

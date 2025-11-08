@@ -2,13 +2,12 @@ import asyncio
 import nest_asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
-from config import MAIN_BOT_TOKEN
+from config import MAIN_BOT_TOKEN, CHANNEL_ID, CHANNEL_LINK
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
 from Jobs.news import news_job
 from Jobs.subscription_management import check_and_remove_expired_subscribers, send_expiration_reminders
 # from Jobs.portfolio import portfolio_job
-# from Jobs.stoploss import stoploss_job
 from utils.logging import logger
 from setup_database import add_coin, remove_coin, load_watched_coins
 logger.info("Main Bot is starting...")
@@ -44,6 +43,8 @@ async def button_handler(update, context):
 
 async def main():
     app = Application.builder().token(MAIN_BOT_TOKEN).build()
+    app.bot_data['channel_id'] = CHANNEL_ID
+
 
     app.add_handler(CommandHandler("start", start))
     logger.info("CommandHandler for 'start' added")
@@ -57,8 +58,6 @@ async def main():
     app.add_handler(CommandHandler("portfolio", portfolio))
     logger.info("CommandHandler for 'portfolio' added")
 
-    app.add_handler(CommandHandler("trade", trade))
-    logger.info("CommandHandler for 'trade' added")
     
     app.add_handler(CommandHandler("help", help_command))
     logger.info("CommandHandler for 'help' added")

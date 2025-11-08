@@ -11,7 +11,7 @@ import hashlib
 import json
 from datetime import datetime, timedelta
 from telegram import Bot
-from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PALNS # دمج الاستيرادات
+from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PALNS, CHANNEL_ID # دمج الاستيرادات
 from setup_database import add_subscriber, update_payment_status, remove_pending_payment
 from utils.logging import logger
 
@@ -117,6 +117,15 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
     """تحديث حالة الدفع وإزالة الدفعة المعلقة وإشعار المستخدم"""
 
     logger.info(f"Processing successful payment for payment_id: {payment_id}, user_id: {user_id}, duration: {duration}, plan_id: {plan_id}")
+    
+    # إلغاء حظر المستخدم من القناة للسماح له بالانضمام مرة أخرى
+    try:
+        # bot_instance = Bot(token=SUBS_BOT_TOKEN) # لا حاجة لإنشاء كائن Bot جديد، bot متاح بالفعل
+        await bot.unban_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
+        logger.info(f"User {user_id} unbanned from channel {CHANNEL_ID}.")
+    except Exception as e:
+        logger.error(f"Error unbanning user {user_id} from channel {CHANNEL_ID}: {e}")
+
     update_payment_status(payment_id, 'completed')
     logger.info(f"Payment status for {payment_id} updated to 'completed'.")
 

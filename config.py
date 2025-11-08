@@ -11,9 +11,11 @@ BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
 BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
 NOWPAYMENTS_API_KEY = os.getenv("NOWPAYMENTS_API_KEY")
 NOWPAYMENTS_IPN_KEY= os.getenv("NOWPAYMENTS_IPN_SECRET")
+WEBHOOK_URL = os.getenv('WEBHOOK_URL')
+CHANNEL_ID = os.getenv('CHANNEL_ID')
+CHANNEL_LINK = os.getenv('CHANNEL_LINK')
 
-if not SUBS_BOT_TOKEN:
-    raise ValueError("TELEGRAM_SUBSCRIPTONS_TOKEN is not set in .env file")
+
 
 from setup_database import load_watched_coins, add_coin, remove_coin
 #ALERTS
@@ -86,6 +88,3 @@ SUPPORTED_NETWORKS = ['TON', 'BEP20']
 SUCCESS_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
 CANCEL_URL = f"https://t.me/{SUBS_BOT_USERNAME}"
 
-WEBHOOK_URL = os.getenv('WEBHOOK_URL')
-
-CHANNEL_LINK = os.getenv('CHANNEL_LINK')
