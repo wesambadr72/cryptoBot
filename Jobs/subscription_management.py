@@ -21,7 +21,6 @@ async def check_and_remove_expired_subscribers():
     for subscriber in expired_subscribers:
         user_id = subscriber[0]
         username = subscriber[1]
-        # payment_reference = subscriber[2] # Not used for removal from channel
         try:
             # Attempt to remove user from channel
             await bot.ban_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
