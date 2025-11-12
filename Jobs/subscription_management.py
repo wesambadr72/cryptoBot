@@ -53,7 +53,10 @@ async def send_expiration_reminders():
             expiration_date = datetime.strptime(expiration_date_str, '%Y-%m-%d %H:%M:%S')
             await bot.send_message(
                 chat_id=user_id,
-                text=f"🔔 تذكير: اشتراكك في قناة OWL CAB سينتهي في {expiration_date.strftime('%Y-%m-%d')}!\nيرجى تجديد اشتراكك لتجنب انقطاع الخدمة."
+                text=f"""
+                🔔 تذكير: اشتراكك في قناة OWL CAB سينتهي في {expiration_date.strftime('%Y-%m-%d')}!\nيرجى تجديد اشتراكك لتجنب انقطاع الخدمة.
+               (🔔 Remind your that your subscription on OWL CAB will expire in {expiration_date.strftime('%Y-%m-%d')} days, please renew it.)
+                """
             )
             logger.info(f"Sent expiration reminder to user {user_id} ({username}).")
         except Exception as e:

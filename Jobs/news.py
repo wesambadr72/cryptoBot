@@ -1,6 +1,6 @@
 from utils.logging import logger
 from datetime import datetime
-from config import RSS_FEEDS
+from config import RSS_FEEDS,CHANNEL_ID
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from googletrans import Translator
 from setup_database import is_news_processed, mark_news_as_processed
@@ -27,12 +27,6 @@ sentiment_labels = [model.config.id2label[i] for i in range(len(model.config.id2
 
 
 
-
-
-
-
-
-# Function to escape HTML special characters
 
 
 
@@ -137,12 +131,15 @@ async def news_job(context):
         الوظيفة الرئيسية لجلب وتحليل الأخبار
         -------------------------
         """
-        chat_id = context.bot_data.get('chat_id')
-        if not chat_id: 
-            logger.warning("CHAT_ID is not set. Cannot send news message.") 
-            return [] 
+        chat_id = CHANNEL_ID  # استخدام CHANNEL_ID المستورد من config.py
+        if not chat_id:
+            logger.warning("CHANNEL_ID is not set. Cannot send news message.")
+            return []
 
-
+        recipient_chat_ids = {CHANNEL_ID}
+        user_chat_id = context.bot_data.get('chat_id')
+        if user_chat_id and user_chat_id != CHANNEL_ID:
+            recipient_chat_ids.add(user_chat_id)
 
         try: 
             news_list = await fetch_news_from_rss() 
@@ -209,8 +206,8 @@ async def news_job(context):
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
                     f"\n تحليل الخبر (news analysis) 🤖 :\n"
-                    f"🔍 شعور الخبر : {safe_sentiment} ({safe_sentiment_arabic}) {emoji_status}\n"
-                    f"📊 احتمالية شعور الخبر :{safe_confidence}\n"
+                    f"🔍 شعور الخبر (news sentment) : {safe_sentiment_arabic} ({safe_sentiment}) {emoji_status}\n"
+                    f"📊 احتمالية شعور الخبر (news sentment confidence) :{safe_confidence}\n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 
@@ -218,31 +215,34 @@ async def news_job(context):
                 try: 
                     if news['image_url']:
                         # إرسال صورة مع caption
-                        await context.bot.send_photo(
-                            chat_id=chat_id,
-                            photo=news['image_url'],
-                            caption=caption,
-                            parse_mode="HTML"
-                        )
+                        for recipient_id in recipient_chat_ids:
+                            await context.bot.send_photo(
+                                chat_id=recipient_id,
+                                photo=news['image_url'],
+                                caption=caption,
+                                parse_mode="HTML"
+                            )
                     else:
                         # إرسال رسالة نصية بدون صورة
-                        await context.bot.send_message(
-                            chat_id=chat_id,
-                            caption=caption,
-                            parse_mode="HTML",
-                            disable_web_page_preview=True  # ✅ فقط في send_message
-                        )
+                        for recipient_id in recipient_chat_ids:
+                            await context.bot.send_message(
+                                chat_id=recipient_id,
+                                text=caption,
+                                parse_mode="HTML",
+                                disable_web_page_preview=True  # ✅ فقط في send_message
+                            )
                     mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
-                except Exception as e: 
-                    logger.error(f"Error sending message: {e}") 
+                except Exception as e:
+                    logger.error(f"Error sending message: {e}")
                     # في حالة الخطأ، إرسال رسالة بسيطة
-                    await context.bot.send_message( 
-                        chat_id=chat_id, 
-                        text=f"{news['title']}\n{news['link']}\n"
-                    ) 
+                    for recipient_id in recipient_chat_ids:
+                        await context.bot.send_message(
+                            chat_id=recipient_id,
+                            text=f"{news['title']}\n{news['link']}\n"
+                        )
 
 
-            return news_list 
-        except Exception as e: 
+            return news_list
+        except Exception as e:
             logger.error(f"Error in news_job: {e}")
             return []

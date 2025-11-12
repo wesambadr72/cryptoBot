@@ -4,15 +4,23 @@ from utils.binance_api import get_all_prices
 from setup_database import save_price, get_old_price, already_alerted, save_alert
 from setup_database import load_watched_coins
 from utils.helpers import price_change as calculate_price_change
+from config import CHANNEL_ID
 
 def TraView_url(symbol: str) -> str:
     return f"https://www.tradingview.com/symbols/{symbol}"
 
 async def check_prices(context):
-    chat_id = context.bot_data.get('chat_id')
-    if not chat_id:
-        logger.warning("CHAT_ID is not set. Cannot send alert message.")
-        return
+    async with alerts_lock:
+        """
+        -------------------------
+        الوظيفة الرئيسية للتحقق من الأسعار وإرسال التنبيهات
+        -------------------------
+        """
+
+        recipient_chat_ids = {CHANNEL_ID}
+        user_chat_id = context.bot_data.get('chat_id')
+        if user_chat_id and user_chat_id != CHANNEL_ID:
+            recipient_chat_ids.add(user_chat_id)
 
     try:
         prices = get_all_prices()
@@ -42,7 +50,8 @@ async def check_prices(context):
                         f"📊 (change ratio) نسبة التغير: {price_change:.2f}% 🟢\n"
                     )
 
-                    await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='HTML')
+                    for recipient_id in recipient_chat_ids:
+                        await context.bot.send_message(chat_id=recipient_id, text=message, parse_mode='HTML')
                     save_alert(coin, old_price, current_price, price_change)
 
             except Exception as e:

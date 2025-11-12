@@ -1,14 +1,20 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from config import ALLOWED_CHAT_ID
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.bot_data['chat_id'] = update.effective_chat.id
+    user_chat_id = update.effective_chat.id
+    if user_chat_id != ALLOWED_CHAT_ID:
+        await update.message.reply_text("عذراً، لا يمكنك استخدام هذا البوت.")
+        return
+
+    context.bot_data['chat_id'] = user_chat_id
     await update.message.reply_text(
         "هلا! في بوت المساعد للكريبتو 🚀\n"
         "الأوامر:/alerts\n/news\n/portfolio\n/trade\n/help"
     )
-    
+
 async def alerts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         [InlineKeyboardButton("إضافة عملة", callback_data='add_coin')],
