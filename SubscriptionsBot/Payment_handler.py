@@ -1,13 +1,6 @@
-from nowpayments_api import NOWPaymentsAPI
-from config import NOWPAYMENTS_API_KEY, NOWPAYMENTS_IPN_KEY, WEBHOOK_URL,SUCCESS_URL,CANCEL_URL
-from utils.helpers import generate_order_id
-import time
-import os
-import hmac
-import hashlib
 from utils.logging import logger # استيراد الـ logger
 from SubscriptionsBot.payment_gatways.nowpayments_crypto_gateway import NOWPaymentsCryptoGateway
-from SubscriptionsBot.payment_gatways.nowpayments_Fiat_gateway import NOWPaymentsFiatGateway
+# from SubscriptionsBot.payment_gatways.nowpayments_Fiat_gateway import NOWPaymentsFiatGateway
 
 class PaymentHandler:
     def __init__(self):

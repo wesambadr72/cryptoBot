@@ -87,9 +87,9 @@ MESSAGES = {
         'payment_pending': "⏳ لا تزال عملية الدفع معلقة. يرجى الانتظار قليلاً والمحاولة مرة أخرى.",
         'help_message': "أهلاً بك في بوت OWL CAB Subscriptions! إليك الأوامر التي يمكنك استخدامها:\n\n"
                         "/start - لبدء التفاعل مع البوت.\n"
-                        "/subscribe - لاشتراك في خدمة OWL CAB.\n"
-                        "/check_payment - للتحقق من حالة دفعك الأخير.\n"
-                        "/help - لعرض هذه الرسالة المساعدة.\n",
+                        "/اشتراك - لاشتراك في خدمة OWL CAB.\n"
+                        "/تحقق من الدفع - للتحقق من حالة دفعك الأخير.\n"
+                        "/مساعدة - لعرض هذه الرسالة المساعدة.\n",
         'choose_language': "الرجاء اختيار لغتك المفضلة:",
         'arabic_button': "🇸🇦 العربية",
         'english_button': "🇬🇧 English",
@@ -162,5 +162,8 @@ We wish you a successful trading journey and an excellent analysis experience wi
         'one_month_subscription': "1 month - 1 Month Subscription",
         'three_month_subscription': "3 months - 3 Month Subscription",
         'six_month_subscription': "6 months - 6 Month Subscription",
+        'subscribe_command': 'subscribe',
+        'check_payment_command': 'check_payment',
+        'help_command': 'help',
     }
 }

@@ -14,7 +14,7 @@ NOWPAYMENTS_IPN_KEY= os.getenv("NOWPAYMENTS_IPN_SECRET")
 WEBHOOK_URL = os.getenv('WEBHOOK_URL')
 CHANNEL_ID = os.getenv('CHANNEL_ID')
 CHANNEL_LINK = os.getenv('CHANNEL_LINK')
-ALLOWED_CHAT_ID = int(os.getenv('ALLOWED_CHAT_ID')) #   معرف الدردشة
+ALLOWED_CHAT_ID = os.getenv('ALLOWED_CHAT_ID')
 
 
 from setup_database import load_watched_coins, add_coin, remove_coin

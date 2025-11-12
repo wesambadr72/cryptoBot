@@ -2,10 +2,21 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from config import ALLOWED_CHAT_ID
+import logging
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_chat_id = update.effective_chat.id
-    if user_chat_id != ALLOWED_CHAT_ID:
+    user_chat_id = update.effective_user.id
+    logging.info(f"User Chat ID: {user_chat_id}")
+    logging.info(f"Allowed Chat ID (from config): {ALLOWED_CHAT_ID}")
+    try:
+        allowed_chat_id_int = int(ALLOWED_CHAT_ID)
+        logging.info(f"Allowed Chat ID (as int): {allowed_chat_id_int}")
+    except ValueError:
+        logging.error(f"Error converting ALLOWED_CHAT_ID to int: {ALLOWED_CHAT_ID}")
+        await update.message.reply_text("حدث خطأ في إعدادات البوت. يرجى الاتصال بالمسؤول.")
+        return
+
+    if user_chat_id != allowed_chat_id_int:
         await update.message.reply_text("عذراً، لا يمكنك استخدام هذا البوت.")
         return
 

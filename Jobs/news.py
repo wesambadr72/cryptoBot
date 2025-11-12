@@ -10,7 +10,6 @@ import hashlib
 import feedparser
 import torch
 import asyncio
-import html
 import re
 
 
@@ -197,7 +196,7 @@ async def news_job(context):
                 safe_confidence = f"{analysis['confidence']:.2%}"
                 safe_link = news['link']  # لا نحتاج escape للرابط داخل HTML tag
 
-                title_section = f"<b>🇸🇦 {safe_title_ar}</b>\n <b>🇬🇧 {safe_title_en}</b>\n" if safe_title_ar else f"<b>🇬🇧 {safe_title_en}</b>\n"
+                title_section = f"<b>🇸🇦 {safe_title_ar}</b>\n\n <b>🇬🇧 {safe_title_en}</b>\n" if safe_title_ar else f"<b>🇬🇧 {safe_title_en}</b>\n"
 
                 # بناء الرسالة بصيغة HTML
 
@@ -205,9 +204,9 @@ async def news_job(context):
                     f"🗞 العنوان : {title_section}\n"
                     f"📅 تاريخ النشر : {safe_published}\n"
                     f"📰 {safe_summary}\n"
-                    f"\n تحليل الخبر (news analysis) 🤖 :\n"
-                    f"🔍 شعور الخبر (news sentment) : {safe_sentiment_arabic} ({safe_sentiment}) {emoji_status}\n"
-                    f"📊 احتمالية شعور الخبر (news sentment confidence) :{safe_confidence}\n"
+                    f"\n News analysis (تحليل الأخبار ) 🤖 :\n"
+                    f"🔍 News Sentment (شعور الخبر) : \n{safe_sentiment_arabic} ({safe_sentiment}) {emoji_status}\n"
+                    f"📊 news sentment confidence (احتمالية شعور الخبر) : \n{safe_confidence}\n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 

@@ -6,10 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from flask import Flask, request, jsonify, Blueprint
 from SubscriptionsBot.Payment_handler import PaymentHandler
-import hmac
-import hashlib
 import json
-from datetime import datetime, timedelta
 from telegram import Bot
 from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PALNS, CHANNEL_ID # دمج الاستيرادات
 from setup_database import add_subscriber, update_payment_status, remove_pending_payment

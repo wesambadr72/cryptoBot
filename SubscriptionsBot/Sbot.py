@@ -5,12 +5,11 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.logging import logger
-from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
+from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 from Payment_handler import PaymentHandler
 from config import SUBS_BOT_TOKEN, PAYMENTS_PALNS,CHANNEL_LINK
 from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment
-from datetime import datetime, timedelta
 import asyncio
 from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities,MESSAGES
 from SubscriptionsBot.webhookserver import process_successful_payment

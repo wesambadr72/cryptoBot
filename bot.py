@@ -2,7 +2,7 @@ import asyncio
 import nest_asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters
-from config import MAIN_BOT_TOKEN, CHANNEL_ID, CHANNEL_LINK
+from config import MAIN_BOT_TOKEN, CHANNEL_ID
 from handlers import start, news, portfolio, trade, help_command, alerts
 from Jobs.alerts import check_prices
 from Jobs.news import news_job
@@ -73,7 +73,6 @@ async def main():
     scheduler.add_job(check_and_remove_expired_subscribers, "interval", days=1)
     scheduler.add_job(send_expiration_reminders, "interval", days=1)
     # scheduler.add_job(portfolio_job, "interval", days=1, args=[app])
-    # scheduler.add_job(stoploss_job, "interval", minutes=10, args=[app])
     logger.info("Scheduler is starting...")
     scheduler.start()
     logger.info("Scheduler started successfully")
