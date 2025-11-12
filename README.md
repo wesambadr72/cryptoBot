@@ -8,8 +8,6 @@ A Telegram bot built with Python to help users track cryptocurrency news, set pr
 - `/help` - Display help information
 - `/news` - Get the latest cryptocurrency news
 - `/alert` - Set up price alerts for specific cryptocurrencies
-- `/portfolio` - View and manage your crypto portfolio
-- `/trade` - Simulate cryptocurrency trades
 
 ## Prerequisites 📋
 
@@ -83,12 +81,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Future Enhancements 🎯
 
-- Real-time cryptocurrency price tracking
-- Integration with major cryptocurrency exchanges
-- Advanced trading features and analytics
-- Portfolio performance tracking
-- Price alerts with customizable conditions
-- Historical data analysis and charts
+- add volume and liquidity to alerts messages
+
 
 ## Support 💬
 
