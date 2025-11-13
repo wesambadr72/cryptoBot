@@ -1,3 +1,4 @@
+import asyncio
 from utils.logging import logger
 from datetime import datetime
 from utils.binance_api import get_all_prices
@@ -8,6 +9,8 @@ from config import CHANNEL_ID
 
 def TraView_url(symbol: str) -> str:
     return f"https://www.tradingview.com/symbols/{symbol}"
+
+alerts_lock = asyncio.Lock()
 
 async def check_prices(context):
     async with alerts_lock:
