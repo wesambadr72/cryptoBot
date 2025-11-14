@@ -213,9 +213,9 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
         # استخراج plan_id و duration من order_id
         parts = order_id.split('_')
-        plan_id = parts[0]
+        plan_id = parts[0] # plan_id هو الجزء الأول من order_id
         user_id = int(parts[1]) # التأكد من استخدام user_id الصحيح
-        duration = int(parts[3])
+        duration = int(parts[3]) # duration هو الجزء الثالث من order_id
 
         # استدعاء الدالة المركزية لمعالجة الدفع الناجح
         process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id)

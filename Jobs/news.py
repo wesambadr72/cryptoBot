@@ -73,14 +73,14 @@ async def fetch_news_from_rss():
 
                 published_12h = dt.strftime("%a, %d %b %Y • %I:%M %p")
 
-                summary_text = entry.summary or entry.description or entry.title
+                summary_text = entry.summary or entry.description or entry.title #موقع coindesk ما يعطي summary او description لذلك نرسل title كا حل اخير
                 
                 news_list.append({
                     "uniq_id": uniq_id,
                     "title": entry.title,
                     "link": entry.link,
                     "published": published_12h or "Time of publishing NOT FOUND",
-                    "summary": strip_html_tags_and_unescape_entities(summary_text), #موقع coindesk ما يعطي summary او description لذلك نرسل title كا حل اخير
+                    "summary": strip_html_tags_and_unescape_entities(summary_text), 
                     "image_url": image_url,
                 })
 
@@ -134,11 +134,6 @@ async def news_job(context):
         if not chat_id:
             logger.warning("CHANNEL_ID is not set. Cannot send news message.")
             return []
-
-        recipient_chat_ids = {CHANNEL_ID}
-        user_chat_id = context.bot_data.get('chat_id')
-        if user_chat_id and user_chat_id != CHANNEL_ID:
-            recipient_chat_ids.add(user_chat_id)
 
         try: 
             news_list = await fetch_news_from_rss() 
@@ -196,17 +191,17 @@ async def news_job(context):
                 safe_confidence = f"{analysis['confidence']:.2%}"
                 safe_link = news['link']  # لا نحتاج escape للرابط داخل HTML tag
 
-                title_section = f"<b>🇸🇦 {safe_title_ar}</b>\n\n <b>🇬🇧 {safe_title_en}</b>\n" if safe_title_ar else f"<b>🇬🇧 {safe_title_en}</b>\n"
+                title_section = f"<b>🇸🇦 {safe_title_ar}</b>\n <b>🇬🇧 {safe_title_en}</b>\n" if safe_title_ar else f"<b>🇬🇧 {safe_title_en}</b>\n"
 
                 # بناء الرسالة بصيغة HTML
 
                 caption = (
-                    f"🗞 العنوان : {title_section}\n"
-                    f"📅 تاريخ النشر : {safe_published}\n"
+                    f"🗞 العنوان(Title) : \n{title_section}\n"
+                    f"📅 تاريخ النشر(Published) : {safe_published}\n"
                     f"📰 {safe_summary}\n"
-                    f"\n News analysis (تحليل الأخبار ) 🤖 :\n"
-                    f"🔍 News Sentment (شعور الخبر) : \n{safe_sentiment_arabic} ({safe_sentiment}) {emoji_status}\n"
-                    f"📊 news sentment confidence (احتمالية شعور الخبر) : \n{safe_confidence}\n"
+                    f"\n 🤖 تحليل الخبر (News Analysis) :  \n"
+                    f"🔍 شعور الخبر (News Sentiment) : \n{safe_sentiment_arabic} ({safe_sentiment}) {emoji_status}\n"
+                    f"📊 احتمالية شعور الخبر (Confidence) : {safe_confidence}\n"
                     f"🔗 <a href=\"{safe_link}\">اقرأ المزيد</a>"
                 )
 
@@ -214,29 +209,26 @@ async def news_job(context):
                 try: 
                     if news['image_url']:
                         # إرسال صورة مع caption
-                        for recipient_id in recipient_chat_ids:
-                            await context.bot.send_photo(
-                                chat_id=recipient_id,
-                                photo=news['image_url'],
-                                caption=caption,
-                                parse_mode="HTML"
-                            )
+                        await context.bot.send_photo(
+                            chat_id=chat_id,
+                            photo=news['image_url'],
+                            caption=caption,
+                            parse_mode="HTML"
+                        )
                     else:
                         # إرسال رسالة نصية بدون صورة
-                        for recipient_id in recipient_chat_ids:
-                            await context.bot.send_message(
-                                chat_id=recipient_id,
-                                text=caption,
-                                parse_mode="HTML",
-                                disable_web_page_preview=True  # ✅ فقط في send_message
+                        await context.bot.send_message(
+                            chat_id=chat_id,
+                            text=caption,
+                            parse_mode="HTML",
+                            disable_web_page_preview=True  # ✅ فقط في send_message
                             )
                     mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
                 except Exception as e:
                     logger.error(f"Error sending message: {e}")
                     # في حالة الخطأ، إرسال رسالة بسيطة
-                    for recipient_id in recipient_chat_ids:
-                        await context.bot.send_message(
-                            chat_id=recipient_id,
+                    await context.bot.send_message(
+                            chat_id=chat_id,    
                             text=f"{news['title']}\n{news['link']}\n"
                         )
 

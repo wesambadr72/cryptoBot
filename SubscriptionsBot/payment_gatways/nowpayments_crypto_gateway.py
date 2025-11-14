@@ -19,7 +19,7 @@ class NOWPaymentsCryptoGateway:
         invoice = self.client.create_invoice(
             price_amount=plan_price,
             price_currency='usd',
-            pay_currency='usdtton',
+            pay_currency='usdtbsc',
             order_id=order_id,
             order_description=f'{plan_duration} شهر اشتراك',
             ipn_callback_url=WEBHOOK_URL,

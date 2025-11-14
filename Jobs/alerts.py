@@ -20,10 +20,7 @@ async def check_prices(context):
         -------------------------
         """
 
-        recipient_chat_ids = {CHANNEL_ID}
-        user_chat_id = context.bot_data.get('chat_id')
-        if user_chat_id and user_chat_id != CHANNEL_ID:
-            recipient_chat_ids.add(user_chat_id)
+        chat_id = CHANNEL_ID
 
     try:
         prices = get_all_prices()
@@ -46,15 +43,14 @@ async def check_prices(context):
                     coin_link = f'<a href="{tv_url}">{coin}</a>'
 
                     message = (
-                        f"🚨 تنبيه! (alert)\n"
-                        f"🪙 العملة: {coin_link}\n"
-                        f" (previous price) السعر السابق: {old_price:.5f}\n"
-                        f" (current price) السعر الحالي: {current_price:.5f}\n"
-                        f"📊 (change ratio) نسبة التغير: {price_change:.2f}% 🟢\n"
+                        f"🚨 تنبيه (Alert)\n"
+                        f"🪙 العملة (Coin):  {coin_link}\n"
+                        f"💰 السعر السابق (Previous):  {old_price:.5f}\n"
+                        f"💸 السعر الحالي (Current): {current_price:.5f}\n"
+                        f"📊 نسبة التغير (Change):  {price_change:.2f}%  🟢\n"
                     )
 
-                    for recipient_id in recipient_chat_ids:
-                        await context.bot.send_message(chat_id=recipient_id, text=message, parse_mode='HTML')
+                    await context.bot.send_message(chat_id=chat_id, text=message, parse_mode='HTML')
                     save_alert(coin, old_price, current_price, price_change)
 
             except Exception as e:
