@@ -1,4 +1,5 @@
 import logging
+import sys
 # إعداد التسجيل
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',

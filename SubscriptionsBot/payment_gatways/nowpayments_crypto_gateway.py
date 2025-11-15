@@ -31,7 +31,7 @@ class NOWPaymentsCryptoGateway:
         return {
             'payment_id': invoice.get('id'),
             'pay_address': invoice.get('pay_address'),
-            'pay_amount': invoice.get('price_amount'),  # تم التغيير من 'pay_amount' إلى 'price_amount'
+            'price_amount': invoice.get('price_amount'),  
             'order_id': invoice.get('order_id'),
             'pay_currency': invoice.get('pay_currency'),
             'invoice_url': invoice.get('invoice_url')

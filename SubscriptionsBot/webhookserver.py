@@ -11,6 +11,7 @@ from telegram import Bot
 from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PALNS, CHANNEL_ID # دمج الاستيرادات
 from setup_database import add_subscriber, update_payment_status, remove_pending_payment
 from utils.logging import logger
+from utils.helpers import MESSAGES
 
 app = Flask(__name__)
 payment_handler = PaymentHandler()
@@ -86,19 +87,8 @@ async def handle_payment_webhook():
             return jsonify({'status': 'success'}), 200
 
         elif payment_status == 'failed' or payment_status == 'cancelled':
-            logger.warning(f"Payment {payment_id} for order {order_id} failed or cancelled. Status: {payment_status}")
-            await bot.send_message(user_id, MESSAGES['ar']['payment_failed'].format(payment_id=payment_id))
-            update_payment_status(payment_id, payment_status)
-            remove_pending_payment(order_id)
-            # يمكنك إضافة منطق لإرسال رسالة للمستخدم هنا إذا أردت
-            user_id = int(parts[1])
-            bot.send_message(
-                user_id,
-                f'❌ فشل أو إلغاء الدفع لطلبك رقم {order_id}. يرجى المحاولة مرة أخرى.'
-            )
-            logger.info(f"Payment {payment_id} status updated to {payment_status} and pending payment removed.")
-    
-        return jsonify({'status': 'ok'}), 200
+            await process_failedOrCancelled_payment(payment_id, user_id, order_id)  
+            return jsonify({'status': 'ok'}), 200
     except Exception as e:
         logger.error(f"Error processing payment webhook: {e}")
         return jsonify({'error': 'Internal server error'}), 500
@@ -132,8 +122,18 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
     add_subscriber(user_id, None, duration, subscription_type=plan_id) # إضافة المشترك هنا، وتمرير None لـ username
     logger.info(f"Subscriber {user_id} added/updated with plan {plan_id} for {duration} months.")
 
-    await bot.send_message(user_id, f'✅🎉 تم تأكيد دفعك بنجاح! تم تفعيل اشتراكك لمدة {duration} شهر! رابط القناة :{channel_link}.')
+    await bot.send_message(user_id, MESSAGES['ar']['payment_successful'].format(payment_id=payment_id, duration=duration, channel_link=channel_link))
     logger.info(f"Confirmation message sent to user {user_id}.")
+
+async def process_failedOrCancelled_payment(payment_id, user_id, order_id):
+    """تحديث حالة الدفع وإزالة الدفعة المعلقة وإشعار المستخدم"""
+    logger.warning(f"Processing failed or cancelled payment for payment_id: {payment_id}, user_id: {user_id}, order_id: {order_id}")
+    update_payment_status(payment_id, 'failed_or_cancelled')
+    logger.warning(f"Payment status for {payment_id} updated to 'failed_or_cancelled'.")
+    remove_pending_payment(order_id)
+    logger.info(f"Pending payment {order_id} removed.")
+    await bot.send_message(user_id, MESSAGES['ar']['payment_failed'].format(payment_id=payment_id))
+    logger.info(f"Notification message sent to user {user_id} about failed or cancelled payment.")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
