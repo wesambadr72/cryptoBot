@@ -25,6 +25,7 @@ async def check_and_remove_expired_subscribers():
             # Attempt to remove user from channel
             await bot.ban_chat_member(chat_id=CHANNEL_ID, user_id=user_id)
             logger.info(f"Successfully removed user {user_id} ({username}) from channel {CHANNEL_ID}.")
+            
             # Update subscriber status in DB to inactive
             update_subscriber_status(user_id, 0) # 0 for inactive
             logger.info(f"Subscriber {user_id} status updated to inactive in DB.")

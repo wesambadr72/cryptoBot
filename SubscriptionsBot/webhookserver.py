@@ -81,13 +81,20 @@ async def handle_payment_webhook():
 
         if payment_status == 'finished':
             logger.info(f"Payment {payment_id} finished. Activating subscription for user {order_id}.")
+
             # استدعاء الدالة المركزية لمعالجة الدفع الناجح مع duration
             process_successful_payment(payment_id, user_id, CHANNEL_LINK, duration_value, plan_name) # تمرير plan_name و duration_value
             logger.info(f"Subscription activated and user notified for payment {payment_id}.")
+
             return jsonify({'status': 'success'}), 200
 
         elif payment_status == 'failed' or payment_status == 'cancelled':
-            await process_failedOrCancelled_payment(payment_id, user_id, order_id)  
+            logger.info(f"Payment {payment_id} failed or cancelled. Deactivating subscription for user {order_id}.")
+
+            # استدعاء الدالة المركزية لمعالجة الدفع الفاشل أو الملغى
+            await process_failedOrCancelled_payment(payment_id, user_id, order_id)
+            logger.info(f"Subscription deactivated and user notified for payment {payment_id}.")
+            
             return jsonify({'status': 'ok'}), 200
     except Exception as e:
         logger.error(f"Error processing payment webhook: {e}")
@@ -128,10 +135,13 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
 async def process_failedOrCancelled_payment(payment_id, user_id, order_id):
     """تحديث حالة الدفع وإزالة الدفعة المعلقة وإشعار المستخدم"""
     logger.warning(f"Processing failed or cancelled payment for payment_id: {payment_id}, user_id: {user_id}, order_id: {order_id}")
+    
     update_payment_status(payment_id, 'failed_or_cancelled')
     logger.warning(f"Payment status for {payment_id} updated to 'failed_or_cancelled'.")
+    
     remove_pending_payment(order_id)
     logger.info(f"Pending payment {order_id} removed.")
+    
     await bot.send_message(user_id, MESSAGES['ar']['payment_failed'].format(payment_id=payment_id))
     logger.info(f"Notification message sent to user {user_id} about failed or cancelled payment.")
 

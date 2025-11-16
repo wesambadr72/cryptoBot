@@ -82,8 +82,8 @@ MESSAGES = {
         'no_pending_payment': "لا توجد عملية دفع معلقة للتحقق منها.",
         'payment_details_not_found': "لم يتم العثور على تفاصيل الدفع المعلقة.",
         'payment_expired': "⏳ انتهت صلاحية عملية الدفع هذه (أكثر من 20 دقيقة).\nيرجى اختيار الاشتراك من جديد.",
-        'payment_finished_success': "✅ تم تأكيد الدفع بنجاح! سيتم تفعيل اشتراكك قريباً.",
-        'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.",
+        'payment_successful': "✅ تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}. (Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}.)",   
+        'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى. (Payment failed or cancelled. Please try again.)",
         'payment_pending': "⏳ لا تزال عملية الدفع معلقة. يرجى الانتظار قليلاً والمحاولة مرة أخرى.",
         'help_message': "أهلاً بك في بوت OWL CAB Subscriptions! إليك الأوامر التي يمكنك استخدامها:\n\n"
                         "/start - لبدء التفاعل مع البوت.\n"
@@ -146,8 +146,8 @@ We wish you a successful trading journey and an excellent analysis experience wi
         'no_pending_payment': "No pending payment to check.",
         'payment_details_not_found': "Pending payment details not found.",
         'payment_expired': "⏳ This payment has expired (more than 20 minutes).\nPlease choose a subscription again.",
-        'payment_finished_success': "✅ Payment confirmed successfully! Your subscription will be activated soon.",
-        'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again.",
+        'payment_successful': "✅ Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}. (تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}.)",
+        'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again. (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
         'payment_pending': "⏳ Payment is still pending. Please wait a moment and try again.",
         'help_message': "Welcome to OWL CAB Subscriptions Bot! Here are the commands you can use:\n\n"
                         "/start - To start interacting with the bot.\n"
