@@ -11,7 +11,7 @@ from Payment_handler import PaymentHandler
 from config import SUBS_BOT_TOKEN, PAYMENTS_PALNS,CHANNEL_LINK
 from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment
 import asyncio
-from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities,MESSAGES
+from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities, MESSAGES, extract_network_from_currency
 from SubscriptionsBot.webhookserver import process_successful_payment
 
 payment_handler = PaymentHandler()
@@ -49,7 +49,8 @@ async def welcoming_msg(update: Update, context: ContextTypes.DEFAULT_TYPE, lang
     """رسالة الترحيب"""
     user_id = update.effective_user.id
     logger.info(f"Sending welcoming message to user {user_id} in {lang_code} language.")
-    await context.bot.send_message(chat_id=user_id, text=MESSAGES[lang_code]['welcome'])
+
+    await context.bot.send_message(chat_id=user_id, text=MESSAGES[lang_code]['welcome'],parse_mode='HTML')
     logger.info(f"Welcoming message sent successfully to user {user_id}")
 
     # إنشاء لوحة مفاتيح مخصصة بالأوامر
@@ -74,7 +75,7 @@ async def start_subscription(update: Update, context: ContextTypes.DEFAULT_TYPE)
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_day_trial']} - ${PAYMENTS_PALNS['1_DAY_TRIAL']}", callback_data=f'plan_d1_{PAYMENTS_PALNS['1_DAY_TRIAL']}')],
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_month_subscription']} - ${PAYMENTS_PALNS['1_MONTH']}", callback_data=f'plan_m1_{PAYMENTS_PALNS['1_MONTH']}')],
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['three_month_subscription']} - ${PAYMENTS_PALNS['3_MONTHS']} ({'💸 خصم %15' if lang_code == 'ar' else '💸 15% OFF'})", callback_data=f'plan_m3_{PAYMENTS_PALNS["3_MONTHS"]}')],
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} - ${PAYMENTS_PALNS['6_MONTHS']} ({'💸💸 خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PALNS["6_MONTHS"]}')]
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} - ${PAYMENTS_PALNS['6_MONTHS']} ({'💸💸خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PALNS["6_MONTHS"]}')]
     ]
     
     await update.message.reply_text(
@@ -150,8 +151,9 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     context.user_data['last_order_id'] = payment['order_id']
     
     # أرسل تعليمات الدفع مع زر الدفع
+    network = extract_network_from_currency(payment.get('pay_currency'))
     message = strip_html_tags_and_unescape_entities(
-        MESSAGES[lang_code]['payment_details_prompt']
+        MESSAGES[lang_code]['payment_details_prompt'].format(network=network)
     )
     
     keyboard = []
@@ -165,7 +167,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     lang_code = context.user_data.get('language', 'ar') # Default to Arabic
     help_text = MESSAGES[lang_code]['help_message']
-    await update.message.reply_text(help_text)
+    await update.message.reply_text(help_text, parse_mode='HTML')
 
 
 async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

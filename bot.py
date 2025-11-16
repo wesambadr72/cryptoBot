@@ -68,8 +68,8 @@ async def main():
     logger.info("MessageHandler for 'coin_handler' added")
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(check_prices, "interval", minutes=15, args=[app])
-    scheduler.add_job(news_job, "interval", minutes=30, args=[app])
+    # scheduler.add_job(check_prices, "interval", minutes=15, args=[app])
+    scheduler.add_job(news_job, "interval", minutes=1, args=[app])
     scheduler.add_job(check_and_remove_expired_subscribers, "interval", days=1)
     scheduler.add_job(send_expiration_reminders, "interval", days=1)
     # scheduler.add_job(portfolio_job, "interval", days=1, args=[app])

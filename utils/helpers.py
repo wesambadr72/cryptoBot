@@ -37,6 +37,18 @@ def strip_html_tags_and_unescape_entities(text: str) -> str:
     # ثم إزالة علامات HTML
     return TAG_RE.sub('', unescaped_text)
 
+def extract_network_from_currency(pay_currency: str) -> str:
+    """
+    Extracts the network from a given pay_currency string.
+    """
+    pay_currency = pay_currency.lower()
+    if pay_currency.endswith('bsc'):
+        return 'Binance Smart Chain (BSC)'
+    elif pay_currency.endswith('ton'):
+        return 'TON'
+    # Add more network extractions as needed
+    return 'N/A' # Default if no specific network is identified
+
 MESSAGES = {
     'ar': {
         'welcome': """
@@ -65,6 +77,11 @@ MESSAGES = {
 
         إذا واجهتك أي مشكلة أو استفسار، تواصل معنا عبر الحساب @Ws7h9.
 
+        حسابات القناة على وسائل التواصل الاجتماعي:
+        - تويتر  (X حالياَ): <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
+        - تيك توك : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
+        - يوتيوب : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>
+
         🚀 ابدأ تجربتك الآن واستكشف مميزات البوت بالكامل قبل انتهاء الفترة المجانية!
 
         نتمنى لك رحلة تداول ناجحة وخبرة تحليل متميزة معنا 🌟
@@ -75,7 +92,8 @@ MESSAGES = {
         'free_trial_activated': "🎉 لقد تم تفعيل التجربة المجانية الخاصة بك!\nرابط القناة: {channel_link}",
         'already_subscribed': "⚠️ أنت لديك اشتراك فعال بالفعل!",
         'payment_details_prompt': "💰 <b>تفاصيل الدفع:</b>\n"
-                                  "⚠️  أرسل المبلغ ((بالضبط)) -وإلا قد تحدث مشاكل في عملية الدفع- إلى العنوان الموجود في الرابط أدناه\n"
+                                  "⚠️  أرسل المبلغ ((بالضبط)) -وإلا قد تحدث مشاكل في عملية الدفع- إلى العنوان الموجود على الشبكة الطلوبة تحديداَ في الرابط أدناه\n"
+                                  "🌐 الشبكة: {network}\n"
                                   "✅ سيتم تفعيل اشتراكك تلقائياً بعد التأكيد (1-10 دقائق)\n"
                                   "🔍للتحقق من حالة الدفع: /check_payment",
         'pay_now_button': "💳 ادفع الآن",
@@ -129,6 +147,11 @@ Each user gets only one free trial, after which you can choose the appropriate p
 
 If you encounter any problem or inquiry, contact us via the account @Ws7h9.
 
+Social Media Accounts of OWL CAB:
+        - X (Previously known as Twitter) : <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
+        - TikTok : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
+        - YouTube : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>
+
 🚀 Start your experience now and explore the bot's full features before the free period ends!
 
 We wish you a successful trading journey and an excellent analysis experience with us 🌟
@@ -139,7 +162,8 @@ We wish you a successful trading journey and an excellent analysis experience wi
         'free_trial_activated': "🎉 Your free trial has been activated!\nChannel Link: {channel_link}",
         'already_subscribed': "⚠️ You already have an active subscription!",
         'payment_details_prompt': "💰 <b>Payment Details:</b>\n"
-                                  "⚠️ Send the amount ((exactly)) - otherwise, problems may occur in the payment process - to the address in the link below\n"
+                                  "⚠️ Send the amount ((exactly)) - otherwise, problems may occur in the payment process - to the address and network specified in the link below\n"
+                                  "🌐 Network: {network}\n"
                                   "✅ Your subscription will be activated automatically after confirmation (1-10 minutes)\n"
                                   "🔍 To check payment status: /check_payment",
         'pay_now_button': "💳 Pay Now",
