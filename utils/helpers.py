@@ -55,7 +55,7 @@ MESSAGES = {
         🎉  أهلاً وسهلاً بك في بوت اشتراكات قناة OWL CAB🦉!
 
         😍يسعدنا انضمامك إلى مجموعة مستخدمي القناة الذكية المختصة بسوق الكريبتو لمساعدتك في متابعة سوق الكريبتو بسهولة ويُسر.
-        يمكنك الحصول الان على تجربتك المجانية الأولى والتي تتيح لك:
+        يمكنك الحصول الان على تجربتك المجانية والتي تتيح لك:
 
         تجربة جميع الميزات الحصرية لـمدة محدودة بدون أي التزام!
 
@@ -63,7 +63,7 @@ MESSAGES = {
 
         تحليل للاخبار بالذكاء الاصطناعي AI 🤖
 
-        📊تلقي تنبيهات وتحليلات متقدمة للعملات والأسعار، واكتشاف فرص التداول اللحظية.
+        📊تلقي تنبيهات للعملات والأسعار، واكتشاف فرص التداول اللحظية.
 
         روابط مباشرة للعملات عبر البرنامج الشهير TradingView🔗.
 
@@ -75,6 +75,14 @@ MESSAGES = {
 
         (البوت يعرض معلومات فقط ولا يقدم نصائح استثمارية أو يضمن تحقيق أرباح أو تجنب خسائر. جميع قرارات التداول والاستثمار تقع على عاتق المستخدم وحده).
 
+        وسائل الدفع :
+            عملات رقمية :
+                - USDT BEP20
+                - USDT TON
+       
+        فيزا / ماستر كارد (قريبَا ⌛❤️)
+
+
         إذا واجهتك أي مشكلة أو استفسار، تواصل معنا عبر الحساب @Ws7h9.
 
         حسابات القناة على وسائل التواصل الاجتماعي:
@@ -85,7 +93,10 @@ MESSAGES = {
         🚀 ابدأ تجربتك الآن واستكشف مميزات البوت بالكامل قبل انتهاء الفترة المجانية!
 
         نتمنى لك رحلة تداول ناجحة وخبرة تحليل متميزة معنا 🌟
-        – فريق OWL CAB 🦉
+
+        صنع في السعودية 🇸🇦💚
+
+        – <a href="https://wesamlt.netlify.app/">مبرمج</a> OWL CAB 🦉
         """,
         'commands_prompt': "يمكنك استخدام الأوامر التالية:",
         'subscribe_plans_prompt': '📦 اختر خطة الاشتراك:',
@@ -133,7 +144,7 @@ Follow the latest crypto market news from more than one reliable source📰.
 
 AI analysis of news 🤖
 
-📊 Receive advanced alerts and analyses for currencies and prices, and discover instant trading opportunities.
+📊 Receive advanced alerts for currencies and prices, and discover instant trading opportunities.
 
 Direct links to currencies via the famous TradingView program🔗.
 
@@ -145,6 +156,13 @@ Each user gets only one free trial, after which you can choose the appropriate p
 
 (The bot displays information only and does not provide investment advice or guarantee profits or avoid losses. All trading and investment decisions are the sole responsibility of the user).
 
+💳 Payments :
+    cryptocurrencies :
+        - USDT BEP20
+        - USDT TON
+
+visa / master card (soon ⌛❤️)
+
 If you encounter any problem or inquiry, contact us via the account @Ws7h9.
 
 Social Media Accounts of OWL CAB:
@@ -155,7 +173,10 @@ Social Media Accounts of OWL CAB:
 🚀 Start your experience now and explore the bot's full features before the free period ends!
 
 We wish you a successful trading journey and an excellent analysis experience with us 🌟
-– OWL CAB 🦉 Team
+
+Made in Saudi Arabia 🇸🇦💚
+
+– OWL CAB 🦉 <a href="https://wesamlt.netlify.app/">dev.</a>
 """,
         'commands_prompt': "You can use the following commands:",
         'subscribe_plans_prompt': '📦 Choose a subscription plan:',
