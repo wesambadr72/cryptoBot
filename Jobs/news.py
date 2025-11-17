@@ -223,14 +223,11 @@ async def news_job(context):
                             parse_mode="HTML",
                             disable_web_page_preview=True  # ✅ فقط في send_message
                             )
+                            
                     mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
                 except Exception as e:
                     logger.error(f"Error sending message: {e}")
-                    # في حالة الخطأ، إرسال رسالة بسيطة
-                    await context.bot.send_message(
-                            chat_id=chat_id,    
-                            text=f"{news['title']}\n{news['link']}\n"
-                        )
+
 
 
             return news_list
