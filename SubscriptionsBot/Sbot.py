@@ -122,6 +122,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         float(price),
         int(duration[1:])
     )
+    logger.info(f"Payment object received from handler: {payment}") # Added for debugging
     logger.info(f"Payment request created for user {user_id}. Payment ID: {payment.get('payment_id')}")
     
     # احفظ في قاعدة البيانات
@@ -129,7 +130,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         payment['payment_id'],
         user_id,
         payment['order_id'],
-        payment['pay_amount'],
+        payment['price_amount'],
         payment['pay_currency'],
         'pending'
             )
