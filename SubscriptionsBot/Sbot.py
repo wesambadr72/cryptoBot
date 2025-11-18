@@ -140,7 +140,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     add_pending_payment(
         user_id,
         payment['order_id'],
-        payment['pay_amount'],
+        payment['price_amount'],
         payment['pay_currency'],
         'pending',
         payment['pay_address'],
