@@ -73,19 +73,17 @@ MESSAGES = {
 
         لكل مستخدم تجربة مجانية واحدة فقط، بعدها يمكنك اختيار الباقة المناسبة لك.
 
-        (البوت يعرض معلومات فقط ولا يقدم نصائح استثمارية أو يضمن تحقيق أرباح أو تجنب خسائر. جميع قرارات التداول والاستثمار تقع على عاتق المستخدم وحده).
+        <b>(البوت يعرض معلومات فقط ولا يقدم نصائح استثمارية أو يضمن تحقيق أرباح أو تجنب خسائر. جميع قرارات التداول والاستثمار تقع على عاتق المستخدم وحده).</b>
 
         وسائل الدفع :
             عملات رقمية :
                 - USDT BEP20
-                - USDT TON
+
        
         فيزا / ماستر كارد (قريبَا ⌛❤️)
 
 
-        إذا واجهتك أي مشكلة أو استفسار، تواصل معنا عبر الحساب @Ws7h9.
-
-        حسابات القناة على وسائل التواصل الاجتماعي:
+        إذا واجهتك أي مشكلة أو استفسار، تواصل معنا عبر حسابات. القناة على وسائل التواصل الاجتماعي:
         - تويتر  (X حالياَ): <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
         - تيك توك : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
         - يوتيوب : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>
@@ -154,18 +152,16 @@ You can benefit from all services during the free trial period. Upon its expirat
 
 Each user gets only one free trial, after which you can choose the appropriate package for you.
 
-(The bot displays information only and does not provide investment advice or guarantee profits or avoid losses. All trading and investment decisions are the sole responsibility of the user).
+<b>(The bot displays information only and does not provide investment advice or guarantee profits or avoid losses. All trading and investment decisions are the sole responsibility of the user).</b>
 
 💳 Payments :
     cryptocurrencies :
         - USDT BEP20
-        - USDT TON
 
 visa / master card (soon ⌛❤️)
 
-If you encounter any problem or inquiry, contact us via the account @Ws7h9.
+If you encounter any problem or inquiry, contact us via our Social Media Accounts of OWL CAB:
 
-Social Media Accounts of OWL CAB:
         - X (Previously known as Twitter) : <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
         - TikTok : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
         - YouTube : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>

@@ -75,7 +75,7 @@ async def start_subscription(update: Update, context: ContextTypes.DEFAULT_TYPE)
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_day_trial']} - ${PAYMENTS_PALNS['1_DAY_TRIAL']}", callback_data=f'plan_d1_{PAYMENTS_PALNS['1_DAY_TRIAL']}')],
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_month_subscription']} - ${PAYMENTS_PALNS['1_MONTH']}", callback_data=f'plan_m1_{PAYMENTS_PALNS['1_MONTH']}')],
         [InlineKeyboardButton(f"{MESSAGES[lang_code]['three_month_subscription']} - ${PAYMENTS_PALNS['3_MONTHS']} ({'💸 خصم %15' if lang_code == 'ar' else '💸 15% OFF'})", callback_data=f'plan_m3_{PAYMENTS_PALNS["3_MONTHS"]}')],
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} - ${PAYMENTS_PALNS['6_MONTHS']} ({'💸💸خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PALNS["6_MONTHS"]}')]
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} - ${PAYMENTS_PALNS['6_MONTHS']} ({'💸خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PALNS["6_MONTHS"]}')]
     ]
     
     await update.message.reply_text(
