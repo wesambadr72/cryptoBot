@@ -205,7 +205,7 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
 
     # إذا لم تنتهِ الصلاحية، تحقق من NOWPayments
-    payment_status_nowpayments = payment_handler.get_payment_status(pending_payment[6]) # pending_payment[6] هو payment_id
+    payment_status_nowpayments = payment_handler.get_payment_status(int(pending_payment[6])) # pending_payment[6] هو payment_id
     logger.info(f"NOWPayments status for payment {pending_payment[6]} (order: {order_id}): {payment_status_nowpayments.get('payment_status')}")
 
     if payment_status_nowpayments and payment_status_nowpayments['payment_status'] == 'finished':
