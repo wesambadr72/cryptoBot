@@ -41,7 +41,7 @@ async def fetch_news_from_rss():
         for feed_url in RSS_FEEDS:
             feed = feedparser.parse(feed_url)
             for entry in feed.entries:
-                uniq_id = hashlib.md5((entry.title + entry.link + entry.published).encode()).hexdigest()
+                uniq_id = hashlib.md5((entry.title + entry.link).encode()).hexdigest()
                 if is_news_processed(uniq_id):
                     logger.info(f"News already processed: {entry.title}")
                     continue
