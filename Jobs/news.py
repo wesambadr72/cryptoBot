@@ -6,7 +6,7 @@ from googletrans import Translator
 from setup_database import is_news_processed, mark_news_as_processed
 from utils.helpers import strip_html_tags_and_unescape_entities
 import email.utils as eut
-import hashlib
+import uuid
 import feedparser
 import torch
 import asyncio
@@ -41,7 +41,7 @@ async def fetch_news_from_rss():
         for feed_url in RSS_FEEDS:
             feed = feedparser.parse(feed_url)
             for entry in feed.entries:
-                uniq_id = hashlib.md5((entry.title + entry.link).encode()).hexdigest()
+                uniq_id = uuid.uuid4().hex
                 if is_news_processed(uniq_id):
                     logger.info(f"News already processed: {entry.title}")
                     continue

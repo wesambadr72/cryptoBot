@@ -61,3 +61,4 @@ googletrans
 nowpayments-api==1.0.2
 flask==3.1.2
 jsonify==0.5
+uuid==1.30
