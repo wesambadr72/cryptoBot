@@ -105,7 +105,7 @@ def setup_database():
             conn.close()
 
 # إضافة مشترك جديد
-def add_subscriber(user_id, username, duration_value, duration_type='months', subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A'):
+def add_subscriber(user_id, username, duration_value, duration_type, subscription_type, payment_method='NOWPayments', payment_reference=None):
     conn = None
     try:
         conn = get_connection()
@@ -150,8 +150,8 @@ def get_subscriber(user_id):
 
 # تحديث حالة مشترك بعد دفع ناجح
 
-def activate_subscriber(user_id, months, username=None):
-    add_subscriber(user_id, username, months, duration_type='months', subscription_type='premium', payment_method='NOWPayments', payment_reference='N/A')
+def activate_subscriber(user_id, months, subscription_type, username=None, payment_id=None):
+    add_subscriber(user_id, username, months, duration_type='months', subscription_type=subscription_type, payment_method='NOWPayments', payment_reference=payment_id)
 
 
 # إضافة دفعة جديدة

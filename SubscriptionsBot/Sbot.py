@@ -8,7 +8,7 @@ from utils.logging import logger
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 from Payment_handler import PaymentHandler
-from config import SUBS_BOT_TOKEN, PAYMENTS_PALNS,CHANNEL_LINK
+from config import SUBS_BOT_TOKEN, PAYMENTS_PLANS,CHANNEL_LINK
 from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment
 import asyncio
 from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities, MESSAGES, extract_network_from_currency
@@ -72,10 +72,10 @@ async def start_subscription(update: Update, context: ContextTypes.DEFAULT_TYPE)
     lang_code = context.user_data.get('language', 'ar') # Default to Arabic
 
     keyboard = [
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_day_trial']} - ${PAYMENTS_PALNS['1_DAY_TRIAL']}", callback_data=f'plan_d1_{PAYMENTS_PALNS['1_DAY_TRIAL']}')],
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_month_subscription']} - ${PAYMENTS_PALNS['1_MONTH']}", callback_data=f'plan_m1_{PAYMENTS_PALNS['1_MONTH']}')],
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['three_month_subscription']} - ${PAYMENTS_PALNS['3_MONTHS']} ({'💸 خصم %15' if lang_code == 'ar' else '💸 15% OFF'})", callback_data=f'plan_m3_{PAYMENTS_PALNS["3_MONTHS"]}')],
-        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} - ${PAYMENTS_PALNS['6_MONTHS']} ({'💸خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PALNS["6_MONTHS"]}')]
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_day_trial']} - ${PAYMENTS_PLANS['1_DAY_TRIAL']}", callback_data=f'plan_d1_{PAYMENTS_PLANS['1_DAY_TRIAL']}')],
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['one_month_subscription']} -${PAYMENTS_PLANS['1_MONTH']}", callback_data=f'plan_m1_{PAYMENTS_PLANS['1_MONTH']}')],
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['three_month_subscription']}-${PAYMENTS_PLANS['3_MONTHS']}({'💸 خصم %15' if lang_code == 'ar' else '💸 15% OFF'})", callback_data=f'plan_m3_{PAYMENTS_PLANS["3_MONTHS"]}')],
+        [InlineKeyboardButton(f"{MESSAGES[lang_code]['six_month_subscription']} -${PAYMENTS_PLANS['6_MONTHS']} ({'💸خصم %36' if lang_code == 'ar' else '💸💸 36% OFF'})", callback_data=f'plan_m6_{PAYMENTS_PLANS["6_MONTHS"]}')]
     ]
     
     await update.message.reply_text(
@@ -108,7 +108,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         if not get_subscriber(user_id):
             logger.info(f"User {user_id} is activating free trial.")
             # حفظ بيانات المستخدم في قاعدة البيانات باستخدام add_subscriber
-            add_subscriber(user_id, username, 1, duration_type='days', subscription_type='trial', payment_method='Trial', payment_reference='N/A')
+            add_subscriber(user_id, username, 1, duration_type='days', subscription_type='1_DAY_TRIAL', payment_method='Trial', payment_reference='N/A')
             await query.message.reply_text(MESSAGES[lang_code]['free_trial_activated'].format(channel_link=CHANNEL_LINK))
             logger.info(f"Free trial activated for user {user_id}.")
             return
@@ -205,7 +205,7 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
 
     # إذا لم تنتهِ الصلاحية، تحقق من NOWPayments
-    payment_id_to_check = int(pending_payment[6])
+    payment_id_to_check = int(pending_payment[6]) # pending_payment[6] هو payment_id
     logger.info(f"Attempting to get NOWPayments status for payment_id: {payment_id_to_check} (order_id: {order_id})")
     payment_status_nowpayments = payment_handler.get_payment_status(payment_id_to_check) # pending_payment[6] هو payment_id
     logger.info(f"NOWPayments status for payment {pending_payment[6]} (order: {order_id}): {payment_status_nowpayments.get('payment_status')}")

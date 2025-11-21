@@ -6,7 +6,9 @@ logging.basicConfig(
     level=logging.INFO,
     handlers=[
         logging.StreamHandler(sys.stdout), # info/debug/warning
-        logging.StreamHandler(sys.stderr)] #error/critical
+        logging.StreamHandler(sys.stderr), #error/critical
+        logging.FileHandler('app.log') # Add this line to log to a file
+        ]
 )
 # Create a logger instance for this module so every file can log with its own name
 logger = logging.getLogger(__name__)

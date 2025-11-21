@@ -2,7 +2,7 @@ import random
 import string
 import html
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 def price_change(old_price, new_price):
     return ((new_price - old_price) / old_price) * 100
@@ -10,8 +10,6 @@ def price_change(old_price, new_price):
 def format_percentage(value):
     return f"{value:.2f}%"
 
-def format_message(symbol, change, price):
-    return f"{symbol}: تغير {format_percentage(change)} والسعر الحالي {price:.2f} USDT"
 
 def generate_order_id(prefix="sub", user_id=None, plan_type=None, duration=None):
     rand_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
@@ -21,8 +19,12 @@ def generate_order_id(prefix="sub", user_id=None, plan_type=None, duration=None)
 
 
 def is_payment_expired(created_at, timeout_minutes=20):
-    created = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
-    return datetime.now() > created + timedelta(minutes=timeout_minutes)
+    # Assume created_at is UTC and convert it to a timezone-aware datetime object
+    created = datetime.fromisoformat(created_at).replace(tzinfo=timezone.utc)
+    expiry_time = created + timedelta(minutes=timeout_minutes)
+    current_time = datetime.now(timezone.utc) # Get current time in UTC
+    print(f"DEBUG: Payment created at: {created}, Expiry time: {expiry_time}, Current time: {current_time}")
+    return current_time > expiry_time
 
 
 def strip_html_tags_and_unescape_entities(text: str) -> str:
@@ -87,6 +89,7 @@ MESSAGES = {
         - تويتر  (X حالياَ): <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
         - تيك توك : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
         - يوتيوب : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>
+        - انستجرام : <a href="https://www.instagram.com/owlcab7?igsh=MTBrcnd4ODVnNTVpYw==">owlcab7</a>
 
         🚀 ابدأ تجربتك الآن واستكشف مميزات البوت بالكامل قبل انتهاء الفترة المجانية!
 
@@ -165,6 +168,7 @@ If you encounter any problem or inquiry, contact us via our Social Media Account
         - X (Previously known as Twitter) : <a href="https://x.com/OwlBot_72?t=vw5b-FfKvAxBe1ND1GenXA&s=09">@OWL_CAB</a>
         - TikTok : <a href="https://www.tiktok.com/@owl.cab?_r=1&_t=ZS-91SE1Qyqi51">owl.cab</a>
         - YouTube : <a href="https://youtube.com/@owlcab_7?si=R1ujFOV2sqEBuDb5">owlcab_7</a>
+        - Instagram : <a href="https://www.instagram.com/owlcab7?igsh=MTBrcnd4ODVnNTVpYw==">owlcab7</a>
 
 🚀 Start your experience now and explore the bot's full features before the free period ends!
 

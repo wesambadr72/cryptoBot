@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, Blueprint
 from SubscriptionsBot.Payment_handler import PaymentHandler
 import json
 from telegram import Bot
-from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PALNS, CHANNEL_ID # دمج الاستيرادات
+from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PLANS, CHANNEL_ID # دمج الاستيرادات
 from setup_database import add_subscriber, update_payment_status, remove_pending_payment
 from utils.logging import logger
 from utils.helpers import MESSAGES
@@ -73,7 +73,7 @@ async def handle_payment_webhook():
                     logger.error(f"Unsupported duration value '{duration_value}' for plan_type '{plan_type}' in order_id: {order_id}")
                     return jsonify({'error': 'Unsupported plan duration'}), 400
 
-        if plan_name not in PAYMENTS_PALNS:
+        if plan_name not in PAYMENTS_PLANS:
             logger.error(f"Constructed plan_name '{plan_name}' not found in PAYMENTS_PALNS for order_id: {order_id}")
             return jsonify({'error': 'Invalid plan_name'}), 400
 
@@ -100,17 +100,14 @@ async def handle_payment_webhook():
         logger.error(f"Error processing payment webhook: {e}")
         return jsonify({'error': 'Internal server error'}), 500
 
-def activate_subscription(user_id, duration_months):
-    """تفعيل الاشتراك في قاعدة البيانات"""
-    logger.info(f"Activating subscription for user {user_id} for {duration_months} months.")
-    add_subscriber(user_id, None, duration_months)
-    logger.info(f"Subscription activated for user {user_id}.")
+
+    
 
 # إضافة دالة قابلة لإعادة الاستخدام لتحديث حالة الدفع
-async def process_successful_payment(payment_id, user_id, channel_link, duration, plan_id):
+async def process_successful_payment(payment_id, user_id, channel_link, duration, plan_name):
     """تحديث حالة الدفع وإزالة الدفعة المعلقة وإشعار المستخدم"""
 
-    logger.info(f"Processing successful payment for payment_id: {payment_id}, user_id: {user_id}, duration: {duration}, plan_id: {plan_id}")
+    logger.info(f"Processing successful payment for payment_id: {payment_id}, user_id: {user_id}, duration: {duration}, plan_name: {plan_name}")
     
     # إلغاء حظر المستخدم من القناة للسماح له بالانضمام مرة أخرى
     try:
@@ -126,8 +123,8 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
     remove_pending_payment(payment_id)
     logger.info(f"Pending payment {payment_id} removed.")
 
-    add_subscriber(user_id, None, duration, subscription_type=plan_id) # إضافة المشترك هنا، وتمرير None لـ username
-    logger.info(f"Subscriber {user_id} added/updated with plan {plan_id} for {duration} months.")
+    add_subscriber(user_id, None, duration, duration_type='months', subscription_type=plan_name, payment_reference=payment_id) # إضافة المشترك هنا، وتمرير None لـ username    
+    logger.info(f"Subscriber {user_id} added/updated with plan {plan_name} for {duration} months.")
 
     await bot.send_message(user_id, MESSAGES['ar']['payment_successful'].format(payment_id=payment_id, duration=duration, channel_link=channel_link))
     logger.info(f"Confirmation message sent to user {user_id}.")
