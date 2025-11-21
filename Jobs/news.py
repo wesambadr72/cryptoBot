@@ -156,6 +156,7 @@ async def news_job(context):
                 except Exception as e:
                     title_ar = '' #يحذف النص بدون مشاكل و يكمل طبيعي
                     logger.error(f"Error in translating title to Arabic: {e}")
+                await asyncio.sleep(0.5) #عشان حل مشكلة too many requests
 
 
 
@@ -223,7 +224,7 @@ async def news_job(context):
                             parse_mode="HTML",
                             disable_web_page_preview=True  # ✅ فقط في send_message
                             )
-                            
+                    await asyncio.sleep(2) # تأخير لمدة ثانيتين بعد كل إرسال رسالة
                     mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
                 except Exception as e:
                     logger.error(f"Error sending message: {e}")
