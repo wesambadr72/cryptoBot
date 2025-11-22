@@ -9,7 +9,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKe
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 from Payment_handler import PaymentHandler
 from config import SUBS_BOT_TOKEN, PAYMENTS_PLANS,CHANNEL_LINK
-from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment
+from setup_database import add_subscriber, update_payment_status, get_subscriber, remove_pending_payment, add_payment, add_pending_payment, get_pending_payment, get_pending_payments_by_user_id
 import asyncio
 from utils.helpers import is_payment_expired, strip_html_tags_and_unescape_entities, MESSAGES, extract_network_from_currency
 from SubscriptionsBot.webhookserver import process_successful_payment
@@ -103,7 +103,29 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     user_id = query.from_user.id
 
     logger.info(f"User {user_id} proceeding with paid plan. Duration: {duration}, Price: {price}")
-    # أنشئ الدفعة
+    # التحقق مما إذا كان هناك دفع معلق بالفعل للمستخدم
+    pending_payments = get_pending_payments_by_user_id(user_id)
+    if pending_payments:
+        for p_payment in pending_payments:
+            # p_payment[7] هو created_at
+            if not is_payment_expired(p_payment[7]):
+                # إذا كان هناك دفع معلق نشط، أبلغ المستخدم
+                await query.edit_message_text(
+                    MESSAGES[lang_code]['already_have_pending_payment'].format(
+                        payment_id=p_payment[6], # payment_id
+                        invoice_url=p_payment[5] # payment_address (نستخدمه هنا كـ invoice_url مؤقتًا)
+                    ),
+                    parse_mode='HTML',
+                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=p_payment[5])]])
+                )
+                logger.info(f"User {user_id} already has an active pending payment {p_payment[6]}.")
+                return
+            else:
+                # إذا انتهت صلاحية الدفع المعلق، قم بإزالته
+                remove_pending_payment(p_payment[6]) # order_id
+                logger.info(f"Expired pending payment {p_payment[6]} for user {user_id} removed.")
+
+    # إذا لم يكن هناك دفع معلق نشط، استمر في إنشاء دفع جديد
     if price == 0.0:
         if not get_subscriber(user_id):
             logger.info(f"User {user_id} is activating free trial.")
@@ -123,7 +145,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         int(duration[1:])
     )
     logger.info(f"Payment object received from handler: {payment}") # Added for debugging
-    logger.info(f"Payment request created for user {user_id}. Payment ID: {payment.get('payment_id')}")
+    logger.info(f"Payment request created for user {user_id}. Payment ID: {payment.get('payment_id')} , payment object: {payment}")
     
     # احفظ في قاعدة البيانات
     add_payment(

@@ -12,7 +12,7 @@ def format_percentage(value):
 
 
 def generate_order_id(prefix="sub", user_id=None, plan_type=None, duration=None):
-    rand_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    rand_part = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
     ts = datetime.now().strftime('%Y%m%d%H%M%S')
     return f"{prefix}_{user_id}_{plan_type}_{duration}_{rand_part}_{ts}"
 
@@ -115,6 +115,7 @@ MESSAGES = {
         'payment_successful': "✅ تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}. (Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}.)",   
         'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى. (Payment failed or cancelled. Please try again.)",
         'payment_pending': "⏳ لا تزال عملية الدفع معلقة. يرجى الانتظار قليلاً والمحاولة مرة أخرى.",
+        'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الدفع: {payment_id}\nيرجى إكمال الدفع عبر الرابط أدناه:\n{invoice_url}",
         'help_message': "أهلاً بك في بوت OWL CAB Subscriptions! إليك الأوامر التي يمكنك استخدامها:\n\n"
                         "/start - لبدء التفاعل مع البوت.\n"
                         "/subscribe - لاشتراك في خدمة OWL CAB.\n"
@@ -194,6 +195,7 @@ Made in Saudi Arabia 🇸🇦💚
         'payment_successful': "✅ Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}. (تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}.)",
         'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again. (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
         'payment_pending': "⏳ Payment is still pending. Please wait a moment and try again.",
+        'already_have_pending_payment': "⚠️ You already have an active pending payment. Payment ID: {payment_id}\nPlease complete the payment via the link below:\n{invoice_url}",
         'help_message': "Welcome to OWL CAB Subscriptions Bot! Here are the commands you can use:\n\n"
                         "/start - To start interacting with the bot.\n"
                         "/subscribe - To subscribe to the OWL CAB service.\n"

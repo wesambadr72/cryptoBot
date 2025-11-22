@@ -248,6 +248,24 @@ def get_pending_payment(order_id):
             conn.close()
     return payment
 
+def get_pending_payments_by_user_id(user_id):
+    conn = None
+    payments = []
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT user_id, order_id, amount, currency, status, payment_address, payment_id, created_at
+            FROM pending_payments WHERE user_id=?
+        ''', (user_id,))
+        payments = cursor.fetchall()
+    except sqlite3.Error as e:
+        print(f"Database error in get_pending_payments_by_user_id: {e}")
+    finally:
+        if conn:
+            conn.close()
+    return payments
+
 # دوال لإدارة الاشتراكات
 def get_expired_subscribers():
     conn = None
