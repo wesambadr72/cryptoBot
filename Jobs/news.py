@@ -6,7 +6,7 @@ from googletrans import Translator
 from setup_database import is_news_processed, mark_news_as_processed
 from utils.helpers import strip_html_tags_and_unescape_entities
 import email.utils as eut
-import uuid
+import hashlib
 import feedparser
 import torch
 import asyncio
@@ -41,7 +41,7 @@ async def fetch_news_from_rss():
         for feed_url in RSS_FEEDS:
             feed = feedparser.parse(feed_url)
             for entry in feed.entries:
-                uniq_id = uuid.uuid4().hex
+                uniq_id = hashlib.md5(entry.link.encode()).hexdigest()
                 if is_news_processed(uniq_id):
                     logger.info(f"News already processed: {entry.title}")
                     continue
@@ -156,8 +156,6 @@ async def news_job(context):
                 except Exception as e:
                     title_ar = '' #يحذف النص بدون مشاكل و يكمل طبيعي
                     logger.error(f"Error in translating title to Arabic: {e}")
-                await asyncio.sleep(0.5) #عشان حل مشكلة too many requests
-
 
 
                 # تهريب النصوص باستخدام HTML
@@ -224,7 +222,6 @@ async def news_job(context):
                             parse_mode="HTML",
                             disable_web_page_preview=True  # ✅ فقط في send_message
                             )
-                    await asyncio.sleep(2) # تأخير لمدة ثانيتين بعد كل إرسال رسالة
                     mark_news_as_processed(news['uniq_id'], news['title'], news['link'])
                 except Exception as e:
                     logger.error(f"Error sending message: {e}")
