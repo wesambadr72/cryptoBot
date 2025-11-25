@@ -10,9 +10,10 @@ import json
 from telegram import Bot
 from config import SUBS_BOT_TOKEN, CHANNEL_LINK, PAYMENTS_PLANS, CHANNEL_ID # دمج الاستيرادات
 from setup_database import add_subscriber, update_payment_status, remove_pending_payment
-from utils.logging import logger
+from utils.logging import setup_logging
 from utils.helpers import MESSAGES
 
+logger = setup_logging(log_file='webhookserver.log', name=__name__)
 app = Flask(__name__)
 payment_handler = PaymentHandler()
 bot = Bot(SUBS_BOT_TOKEN) # إنشاء كائن البوت الحقيقي
@@ -142,5 +143,5 @@ async def process_failedOrCancelled_payment(payment_id, user_id, order_id):
     await bot.send_message(user_id, MESSAGES['ar']['payment_failed'].format(payment_id=payment_id))
     logger.info(f"Notification message sent to user {user_id} about failed or cancelled payment.")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# if __name__ == '__main__':
+#     app.run(host='0.0.0.0', port=5000)

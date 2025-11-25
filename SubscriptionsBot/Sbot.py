@@ -4,7 +4,7 @@ import os
 # Add the project root to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from utils.logging import logger
+from utils.logging import setup_logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler
 from Payment_handler import PaymentHandler
@@ -17,6 +17,7 @@ from SubscriptionsBot.webhookserver import process_successful_payment
 payment_handler = PaymentHandler()
 
 
+logger = setup_logging(log_file='sbot.log', name=__name__)
 app = Application.builder().token(SUBS_BOT_TOKEN).build()
 logger.info("Subscriptions bot started...")
 
@@ -144,7 +145,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         float(price),
         int(duration[1:])
     )
-    logger.info(f"Payment object received from handler: {payment}") # Added for debugging
+    
     logger.info(f"Payment request created for user {user_id}. Payment ID: {payment.get('payment_id')} , payment object: {payment}")
     
     # احفظ في قاعدة البيانات

@@ -8,8 +8,10 @@ from Jobs.alerts import check_prices
 from Jobs.news import news_job
 from Jobs.subscription_management import check_and_remove_expired_subscribers, send_expiration_reminders
 # from Jobs.portfolio import portfolio_job
-from utils.logging import logger
+from utils.logging import setup_logging
 from setup_database import add_coin, remove_coin, load_watched_coins
+
+logger = setup_logging(log_file='bot.log', name=__name__)
 logger.info("Main Bot is starting...")
 
 
