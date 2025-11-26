@@ -1,4 +1,5 @@
-from utils.logging import logger
+from utils.logging import setup_logging
+logger = setup_logging(log_file='news.log', name=__name__)
 from datetime import datetime
 from config import RSS_FEEDS,CHANNEL_ID
 from transformers import AutoTokenizer, AutoModelForSequenceClassification

@@ -1,5 +1,6 @@
 import asyncio
-from utils.logging import logger
+from utils.logging import setup_logging
+logger = setup_logging(log_file='alerts.log', name=__name__)
 from datetime import datetime
 from utils.binance_api import get_all_prices
 from setup_database import save_price, get_old_price, already_alerted, save_alert

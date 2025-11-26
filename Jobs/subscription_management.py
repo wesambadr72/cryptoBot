@@ -7,7 +7,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from telegram import Bot
 from config import SUBS_BOT_TOKEN, CHANNEL_ID, CHANNEL_LINK
 from setup_database import get_expired_subscribers, get_subscribers_about_to_expire, update_subscriber_status
-from utils.logging import logger
+from utils.logging import setup_logging
+logger = setup_logging(log_file='subscription_management.log', name=__name__)
 
 bot = Bot(SUBS_BOT_TOKEN)
 
