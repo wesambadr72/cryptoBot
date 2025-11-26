@@ -1,4 +1,5 @@
-from utils.logging import logger # استيراد الـ logger
+from utils.logging import setup_logging # استيراد الـ logger
+logger = setup_logging(log_file='payment_handler.log', name=__name__) # إعداد الـ logger
 from SubscriptionsBot.payment_gatways.nowpayments_crypto_gateway import NOWPaymentsCryptoGateway
 # from SubscriptionsBot.payment_gatways.nowpayments_Fiat_gateway import NOWPaymentsFiatGateway
 

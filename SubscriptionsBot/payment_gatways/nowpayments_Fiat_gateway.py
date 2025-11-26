@@ -1,4 +1,5 @@
-from utils.logging import logger
+from utils.logging import setup_logging # استيراد الـ logger
+logger = setup_logging(log_file='nowpayments_Fiat_gateway.log', name=__name__) # إعداد الـ logger
 
 class NOWPaymentsFiatGateway:
     def __init__(self):

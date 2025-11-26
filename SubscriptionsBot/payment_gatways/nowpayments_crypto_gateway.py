@@ -3,7 +3,8 @@ from config import NOWPAYMENTS_API_KEY, NOWPAYMENTS_IPN_KEY, WEBHOOK_URL,SUCCESS
 from utils.helpers import generate_order_id
 import hmac
 import hashlib
-from utils.logging import logger
+from utils.logging import setup_logging # استيراد الـ logger
+logger = setup_logging(log_file='nowpayments_crypto_gateway.log', name=__name__) # إعداد الـ logger
 
 class NOWPaymentsCryptoGateway:
     def __init__(self):

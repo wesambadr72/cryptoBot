@@ -2,17 +2,18 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from config import ALLOWED_CHAT_ID
-import logging
+from utils.logging import setup_logging # استيراد الـ logger
+logger = setup_logging(log_file='handlers.log', name=__name__) # إعداد الـ logger
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_chat_id = update.effective_user.id
-    logging.info(f"User Chat ID: {user_chat_id}")
-    logging.info(f"Allowed Chat ID (from config): {ALLOWED_CHAT_ID}")
+    logger.info(f"User Chat ID: {user_chat_id}")
+    logger.info(f"Allowed Chat ID (from config): {ALLOWED_CHAT_ID}")
     try:
         allowed_chat_id_int = int(ALLOWED_CHAT_ID)
-        logging.info(f"Allowed Chat ID (as int): {allowed_chat_id_int}")
+        logger.info(f"Allowed Chat ID (as int): {allowed_chat_id_int}")
     except ValueError:
-        logging.error(f"Error converting ALLOWED_CHAT_ID to int: {ALLOWED_CHAT_ID}")
+        logger.error(f"Error converting ALLOWED_CHAT_ID to int: {ALLOWED_CHAT_ID}") 
         await update.message.reply_text("حدث خطأ في إعدادات البوت. يرجى الاتصال بالمسؤول.")
         return
 
