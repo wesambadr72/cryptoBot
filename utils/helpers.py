@@ -1,8 +1,36 @@
 import random
+import qrcode
+from io import BytesIO
 import string
 import html
 import re
 from datetime import datetime, timedelta, timezone
+
+def generate_qr_code_image(pay_address, pay_amount, pay_currency):
+    # تنسيق البيانات لرمز QR. يمكن أن يختلف هذا قليلاً حسب العملة
+    # على سبيل المثال، لـ USDT (TRC20)، قد يكون مجرد العنوان
+    # لـ BTC، قد يكون bitcoin:{address}?amount={amount}
+    # هنا نفترض أننا نستخدم عنوان الدفع والمبلغ كنص عادي
+    qr_data = f"{pay_address}"
+    if pay_amount:
+        qr_data += f" (Amount: {pay_amount} {pay_currency})"
+
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # حفظ الصورة في الذاكرة وإرجاعها
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
 
 def price_change(old_price, new_price):
     return ((new_price - old_price) / old_price) * 100
@@ -112,10 +140,11 @@ MESSAGES = {
                                   "✅ سيتم ارسال رابط القناة و تفعيل اشتراكك تلقائياً بعد التأكيد (1-10 دقائق)\n"
                                   "🔍للتحقق من حالة الدفع: /check_payment",
         'pay_now_button': "💳 ادفع الآن",
+        'qr_code_caption': "امسح رمز QR هذا لنسخ عنوان المحفظة:  {pay_address} ",
         'no_pending_payment': "لا توجد عملية دفع معلقة للتحقق منها.",
         'payment_details_not_found': "لم يتم العثور على تفاصيل الدفع المعلقة.",
         'payment_expired': "⏳ انتهت صلاحية عملية الدفع هذه (أكثر من 20 دقيقة).\nيرجى اختيار الاشتراك من جديد.",
-        'payment_successful': "✅ تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}. (Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}.)",   
+        'payment_successful': "✅🥳🤩 تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. \n معرف الطلب: {order_id},\n المدة: {duration} شهر,\n رابط القناة: {channel_link}.\n===========\n (✅🥳🤩Payment confirmed successfully! Your subscription is now active.\n Order ID: {order_id},\n Duration: {duration} Month,\n Channel Link: {channel_link}.)",   
         'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى. (Payment failed or cancelled. Please try again.)",
         'payment_pending': "⏳ لا تزال عملية الدفع الخاصة بك معلقة. معرف الطلب: {order_id}\n تاكد من دفع المبلغ المطلوب الى المحفظة الاتية: {pay_address}\nسنقوم بإعلامك بمجرد تأكيد الدفع.",
         'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الطلب: {order_id} ",
@@ -195,11 +224,12 @@ Made in Saudi Arabia 🇸🇦💚
                                   "✅ Your subscription will be activated automatically after confirmation (1-10 minutes)\n"
                                   "🔍 To check payment status: /check_payment",
         'pay_now_button': "💳 Pay Now",
+        'qr_code_caption': "Scan the QR code below to copy the payment address:  {pay_address} ",
         'no_pending_payment': "No pending payment to check.",
         'payment_details_not_found': "Pending payment details not found.",
         'payment_expired': "⏳ This payment has expired (more than 20 minutes).\nPlease choose a subscription again.",
-        'payment_successful': "✅ Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}. (تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}.)",
-        'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again. (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
+        'payment_successful': "✅🥳🤩 Payment confirmed successfully! Your subscription is now active. \n Order ID: {order_id},\n Duration: {duration} Month,\n Channel Link: {channel_link}.\n===========\n (✅🥳🤩تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك.\n معرف الطلب: {order_id},\n المدة: {duration} شهر,\n رابط القناة: {channel_link}.)",
+        'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again.\n======\n (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
         'payment_pending': "⏳ Your payment is still pending. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}\n\nWe will notify you once the payment is confirmed.",
         'already_have_pending_payment': "⚠️ You already have an active pending payment. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}",   
         'help_message': "Welcome to OWL CAB Subscriptions Bot! Here are the commands you can use:\n\n"
