@@ -51,9 +51,8 @@ class NOWPaymentsCryptoGateway:
     def verify_ipn(self, payload, signature):
         logger.info(f"Verifying NOWPayments crypto IPN. Payload: {payload}, Signature: {signature}")
         
-        sorted_msg = json.dumps(payload, separators=(',', ':'), sort_keys=True)
-        message = f'{sorted_msg}'
-        
+        sorted_msg = json.dumps(payload, separators=(',', ':'), sort_keys=True, ensure_ascii=False)
+        message = sorted_msg
         calculated_sig = hmac.new(
             str(self.ipn_secret).encode(),
            f"{message}".encode(),
