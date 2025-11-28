@@ -106,9 +106,9 @@ MESSAGES = {
         'payment_details_prompt': "💰 <b>تفاصيل الدفع:</b>\n"
                                   "⚠️  أرسل المبلغ ((بالضبط)) -وإلا قد تحدث مشاكل في عملية الدفع- إلى العنوان الموجود على الشبكة المطلوبة تحديداَ في الرابط أدناه\n"
                                   "\n ©️ معرف الطلب : {order_id}\n"
-                                  "<b>💰 المبلغ المطلوب: {price_amount} {price_currency}\n</b>"
-                                  "<b>💳 عنوان المحفظة المطلوب التحويل لها: {pay_address}\n</b>"
-                                  "<b>🌐 الشبكة: {network}\n</b>"
+                                  "\n<b>💰 المبلغ المطلوب: {price_amount} {price_currency}\n</b>"
+                                  "\n<b>💳 عنوان المحفظة المطلوب التحويل لها: {pay_address}\n</b>"
+                                  "\n<b>🌐 الشبكة: {network}\n</b>"
                                   "✅ سيتم ارسال رابط القناة و تفعيل اشتراكك تلقائياً بعد التأكيد (1-10 دقائق)\n"
                                   "🔍للتحقق من حالة الدفع: /check_payment",
         'pay_now_button': "💳 ادفع الآن",
@@ -117,8 +117,8 @@ MESSAGES = {
         'payment_expired': "⏳ انتهت صلاحية عملية الدفع هذه (أكثر من 20 دقيقة).\nيرجى اختيار الاشتراك من جديد.",
         'payment_successful': "✅ تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}. (Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}.)",   
         'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى. (Payment failed or cancelled. Please try again.)",
-        'payment_pending': "⏳ لا تزال عملية الدفع الخاصة بك معلقة. معرف الدفع: {payment_id}\nيرجى إكمال الدفع عبر الرابط أدناه:\n{invoice_url}\n\nسنقوم بإعلامك بمجرد تأكيد الدفع.",
-        'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الدفع: {payment_id}\nيرجى إكمال الدفع عبر الرابط أدناه:\n{invoice_url}",
+        'payment_pending': "⏳ لا تزال عملية الدفع الخاصة بك معلقة. معرف الطلب: {order_id}\n تاكد من دفع المبلغ المطلوب الى المحفظة الاتية: {pay_address}\nسنقوم بإعلامك بمجرد تأكيد الدفع.",
+        'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الطلب: {order_id} ",
         'help_message': "أهلاً بك في بوت OWL CAB Subscriptions! إليك الأوامر التي يمكنك استخدامها:\n\n"
                         "/start - لبدء التفاعل مع البوت.\n"
                         "/subscribe - لاشتراك في خدمة OWL CAB.\n"
@@ -188,10 +188,10 @@ Made in Saudi Arabia 🇸🇦💚
         'already_subscribed': "⚠️ You already have an active subscription!",
         'payment_details_prompt': "💰 <b>Payment Details:</b>\n"
                                   "⚠️ Send the amount ((exactly)) - otherwise, problems may occur in the payment process - to the address and network specified in the link below\n"
-                                  "©️ Order ID: {order_id}\n"
-                                  "<b>💰 Price Amount: {price_amount} {price_currency}\n</b>"
-                                  "<b>💳 Pay Address: {pay_address}\n</b>"
-                                  "<b>🌐 Network: {network}\n</b>"
+                                  "\n©️ Order ID: {order_id}\n"
+                                  "\n<b>💰 Price Amount: {price_amount} {price_currency}\n</b>"
+                                  "\n<b>💳 Pay Address: {pay_address}\n</b>"
+                                  "\n<b>🌐 Network: {network}\n</b>"
                                   "✅ Your subscription will be activated automatically after confirmation (1-10 minutes)\n"
                                   "🔍 To check payment status: /check_payment",
         'pay_now_button': "💳 Pay Now",
@@ -200,8 +200,8 @@ Made in Saudi Arabia 🇸🇦💚
         'payment_expired': "⏳ This payment has expired (more than 20 minutes).\nPlease choose a subscription again.",
         'payment_successful': "✅ Payment confirmed successfully! Your subscription is now active. Order ID: {order_id}, Duration: {duration}, Channel Link: {channel_link}. (تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. معرف الطلب: {order_id}, المدة: {duration}, رابط القناة: {channel_link}.)",
         'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again. (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
-        'payment_pending': "⏳ Your payment is still pending. Payment ID: {payment_id}\nPlease complete the payment via the link below:\n{invoice_url}\n\nWe will notify you once the payment is confirmed.",
-        'already_have_pending_payment': "⚠️ You already have an active pending payment. Payment ID: {payment_id}\nPlease complete the payment via the link below:\n{invoice_url}",
+        'payment_pending': "⏳ Your payment is still pending. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}\n\nWe will notify you once the payment is confirmed.",
+        'already_have_pending_payment': "⚠️ You already have an active pending payment. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}",   
         'help_message': "Welcome to OWL CAB Subscriptions Bot! Here are the commands you can use:\n\n"
                         "/start - To start interacting with the bot.\n"
                         "/subscribe - To subscribe to the OWL CAB service.\n"

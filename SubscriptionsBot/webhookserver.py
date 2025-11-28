@@ -84,7 +84,7 @@ async def handle_payment_webhook():
             logger.info(f"Payment {payment_id} finished. Activating subscription for user {order_id}.")
 
             # استدعاء الدالة المركزية لمعالجة الدفع الناجح مع duration
-            process_successful_payment(payment_id, user_id, CHANNEL_LINK, duration_value, plan_name, order_id) # تمرير plan_name و duration_value
+            await process_successful_payment(payment_id, user_id, CHANNEL_LINK, duration_value, plan_name, order_id) # تمرير plan_name و duration_value
             logger.info(f"Subscription activated and user notified for payment {payment_id}.")
 
             return jsonify({'status': 'success'}), 200

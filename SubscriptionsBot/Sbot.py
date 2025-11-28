@@ -120,14 +120,11 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
 
     if active_pending_payment:
         # إذا كان هناك دفع معلق نشط، أبلغ المستخدم
-        invoice_url = active_pending_payment[5] # هذا هو invoice_url الذي تم حفظه
-        if not invoice_url.startswith('http://') and not invoice_url.startswith('https://'):
-            invoice_url = 'https://' + invoice_url # إضافة https:// إذا كان مفقودًا
 
         await query.edit_message_text(
             MESSAGES[lang_code]['already_have_pending_payment'].format(
                 payment_id=active_pending_payment[6], # payment_id
-                invoice_url=invoice_url
+                pay_address=active_pending_payment[5] # pay_address
             ),
             parse_mode='HTML',
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=invoice_url)]])
@@ -254,7 +251,7 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         duration = int(parts[3]) # duration هو الجزء الثالث من order_id
 
         # استدعاء الدالة المركزية لمعالجة الدفع الناجح
-        process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id,order_id=order_id)
+        await process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id,order_id=order_id)
         await update.message.reply_text(MESSAGES[lang_code]['payment_successful'].format(order_id=order_id, duration=duration, CHANNEL_LINK=CHANNEL_LINK))
         del context.user_data['last_order_id']
 
@@ -275,7 +272,7 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
         logger.info(f"Payment {order_id} for user {user_id} is still pending or in unknown state. Status: {payment_status_nowpayments.get('payment_status')}")
         # لا يزال معلقًا أو حالة غير معروفة
-        await update.message.reply_text(MESSAGES[lang_code]['payment_pending'])
+        await update.message.reply_text(MESSAGES[lang_code]['payment_pending'].format(order_id=order_id, pay_address=pending_payment[5])) # pending_payment[5] هو pay_address
 
 # سجّل الـ handlers
 app.add_handler(CommandHandler('start', start_command))
