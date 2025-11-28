@@ -106,25 +106,34 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     logger.info(f"User {user_id} proceeding with paid plan. Duration: {duration}, Price: {price}")
     # التحقق مما إذا كان هناك دفع معلق بالفعل للمستخدم
     pending_payments = get_pending_payments_by_user_id(user_id)
+    active_pending_payment = None
     if pending_payments:
         for p_payment in pending_payments:
             # p_payment[7] هو created_at
             if not is_payment_expired(p_payment[7]):
-                # إذا كان هناك دفع معلق نشط، أبلغ المستخدم
-                await query.edit_message_text(
-                    MESSAGES[lang_code]['already_have_pending_payment'].format(
-                        payment_id=p_payment[6], # payment_id
-                        invoice_url=p_payment[5] # payment_address (نستخدمه هنا كـ invoice_url مؤقتًا)
-                    ),
-                    parse_mode='HTML',
-                    reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=p_payment[5])]])
-                )
-                logger.info(f"User {user_id} already has an active pending payment {p_payment[6]}.")
-                return
+                active_pending_payment = p_payment
+                break
             else:
                 # إذا انتهت صلاحية الدفع المعلق، قم بإزالته
-                remove_pending_payment(p_payment[6]) # order_id
+                remove_pending_payment(p_payment[1]) # order_id
                 logger.info(f"Expired pending payment {p_payment[6]} for user {user_id} removed.")
+
+    if active_pending_payment:
+        # إذا كان هناك دفع معلق نشط، أبلغ المستخدم
+        invoice_url = active_pending_payment[5] # هذا هو invoice_url الذي تم حفظه
+        if not invoice_url.startswith('http://') and not invoice_url.startswith('https://'):
+            invoice_url = 'https://' + invoice_url # إضافة https:// إذا كان مفقودًا
+
+        await query.edit_message_text(
+            MESSAGES[lang_code]['already_have_pending_payment'].format(
+                payment_id=active_pending_payment[6], # payment_id
+                invoice_url=invoice_url
+            ),
+            parse_mode='HTML',
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=invoice_url)]])
+        )
+        logger.info(f"User {user_id} already has an active pending payment {active_pending_payment[6]}.")
+        return
 
     # إذا لم يكن هناك دفع معلق نشط، استمر في إنشاء دفع جديد
     if price == 0.0:
@@ -177,7 +186,7 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     # أرسل تعليمات الدفع مع زر الدفع
     network = extract_network_from_currency(payment.get('pay_currency'))
     message = strip_html_tags_and_unescape_entities(
-        MESSAGES[lang_code]['payment_details_prompt'].format(network=network)
+        MESSAGES[lang_code]['payment_details_prompt'].format(network=network, order_id=payment.get('order_id'), price_amount=payment.get('price_amount'), price_currency=payment.get('pay_currency'), pay_address=payment.get('pay_address'))
     )
     
     keyboard = []
@@ -222,7 +231,6 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         remove_pending_payment(order_id)
 
         await update.message.reply_text(MESSAGES[lang_code]['payment_expired'])
-        remove_pending_payment(order_id)
 
         logger.info(f"Expired payment {order_id} removed for user {user_id}.")
         return

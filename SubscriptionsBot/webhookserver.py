@@ -84,7 +84,7 @@ async def handle_payment_webhook():
             logger.info(f"Payment {payment_id} finished. Activating subscription for user {order_id}.")
 
             # استدعاء الدالة المركزية لمعالجة الدفع الناجح مع duration
-            process_successful_payment(payment_id, user_id, CHANNEL_LINK, duration_value, plan_name) # تمرير plan_name و duration_value
+            process_successful_payment(payment_id, user_id, CHANNEL_LINK, duration_value, plan_name, order_id) # تمرير plan_name و duration_value
             logger.info(f"Subscription activated and user notified for payment {payment_id}.")
 
             return jsonify({'status': 'success'}), 200
@@ -105,7 +105,7 @@ async def handle_payment_webhook():
     
 
 # إضافة دالة قابلة لإعادة الاستخدام لتحديث حالة الدفع
-async def process_successful_payment(payment_id, user_id, channel_link, duration, plan_name):
+async def process_successful_payment(payment_id, user_id, channel_link, duration, plan_name, order_id):
     """تحديث حالة الدفع وإزالة الدفعة المعلقة وإشعار المستخدم"""
 
     logger.info(f"Processing successful payment for payment_id: {payment_id}, user_id: {user_id}, duration: {duration}, plan_name: {plan_name}")
@@ -121,7 +121,7 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
     update_payment_status(payment_id, 'completed')
     logger.info(f"Payment status for {payment_id} updated to 'completed'.")
 
-    remove_pending_payment(payment_id)
+    remove_pending_payment(order_id)
     logger.info(f"Pending payment {payment_id} removed.")
 
     add_subscriber(user_id, None, duration, duration_type='months', subscription_type=plan_name, payment_reference=payment_id) # إضافة المشترك هنا، وتمرير None لـ username    
