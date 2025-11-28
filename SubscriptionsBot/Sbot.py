@@ -180,10 +180,13 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     # احفظ order_id في context.user_data للتحقق لاحقًا
     context.user_data['last_order_id'] = payment['order_id']
     
+    # حذف الرسالة الأصلية التي تحتوي على أزرار الخطط
+    await query.delete_message()
+
     # أرسل تعليمات الدفع مع زر الدفع ورمز QR في رسالة واحدة
     network = extract_network_from_currency(payment.get('pay_currency'))
     payment_details_message = strip_html_tags_and_unescape_entities(
-        MESSAGES[lang_code]['payment_details_prompt'].format(network=network, order_id=payment.get('order_id'), price_amount=payment.get('price_amount'), price_currency=payment.get('pay_currency'), pay_address=payment.get('pay_address'))
+        MESSAGES[lang_code]['payment_details_prompt'].format(network=network, order_id=payment.get('order_id'), price_amount=payment.get('price_amount'), price_currency=payment.get('pay_currency').upper(), pay_address=payment.get('pay_address'))
     )
     
     qr_caption = MESSAGES[lang_code]['qr_code_caption'].format(pay_address=payment.get('pay_address'))
@@ -199,7 +202,8 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         payment.get('price_amount'),
         payment.get('pay_currency')
     )
-    await query.message.reply_photo(
+    await context.bot.send_photo(
+        chat_id=user_id,
         photo=qr_image_buffer,
         caption=full_caption,
         parse_mode='HTML',
