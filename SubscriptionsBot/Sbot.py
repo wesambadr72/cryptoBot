@@ -123,13 +123,12 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
 
         await query.edit_message_text(
             MESSAGES[lang_code]['already_have_pending_payment'].format(
-                payment_id=active_pending_payment[6], # payment_id
+                order_id=active_pending_payment[1], # order_id
                 pay_address=active_pending_payment[5] # pay_address
             ),
-            parse_mode='HTML',
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=invoice_url)]])
+            parse_mode='HTML'
         )
-        logger.info(f"User {user_id} already has an active pending payment {active_pending_payment[6]}.")
+        logger.info(f"User {user_id} already has an active pending payment {active_pending_payment[1]}.")
         return
 
     # إذا لم يكن هناك دفع معلق نشط، استمر في إنشاء دفع جديد
@@ -179,9 +178,6 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
 
     # احفظ order_id في context.user_data للتحقق لاحقًا
     context.user_data['last_order_id'] = payment['order_id']
-    
-    # حذف الرسالة الأصلية التي تحتوي على أزرار الخطط
-    await query.delete_message()
 
     # أرسل تعليمات الدفع مع زر الدفع ورمز QR في رسالة واحدة
     network = extract_network_from_currency(payment.get('pay_currency'))
@@ -191,11 +187,6 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
     
     qr_caption = MESSAGES[lang_code]['qr_code_caption'].format(pay_address=payment.get('pay_address'))
     full_caption = payment_details_message + "\n\n" + qr_caption
-
-    keyboard = []
-    if payment.get('invoice_url'):
-        keyboard.append([InlineKeyboardButton(MESSAGES[lang_code]['pay_now_button'], url=payment.get('invoice_url'))])
-    reply_markup = InlineKeyboardMarkup(keyboard)
 
     qr_image_buffer = generate_qr_code_image(
         payment.get('pay_address'),
@@ -207,7 +198,6 @@ async def handle_plan_selection(update: Update, context: ContextTypes.DEFAULT_TY
         photo=qr_image_buffer,
         caption=full_caption,
         parse_mode='HTML',
-        reply_markup=reply_markup
     )
     logger.info(f"Payment instructions and QR code sent to user {user_id} for order_id: {payment.get('order_id')}")
 

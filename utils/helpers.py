@@ -12,8 +12,6 @@ def generate_qr_code_image(pay_address, pay_amount, pay_currency):
     # لـ BTC، قد يكون bitcoin:{address}?amount={amount}
     # هنا نفترض أننا نستخدم عنوان الدفع والمبلغ كنص عادي
     qr_data = f"{pay_address}"
-    if pay_amount:
-        qr_data += f" (Amount: {pay_amount} {pay_currency})"
 
     qr = qrcode.QRCode(
         version=1,
@@ -147,7 +145,7 @@ MESSAGES = {
         'payment_successful': "✅🥳🤩 تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك. \n معرف الطلب: {order_id},\n المدة: {duration} شهر,\n رابط القناة: {channel_link}.\n===========\n (✅🥳🤩Payment confirmed successfully! Your subscription is now active.\n Order ID: {order_id},\n Duration: {duration} Month,\n Channel Link: {channel_link}.)",   
         'payment_failed_cancelled': "❌ فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى. (Payment failed or cancelled. Please try again.)",
         'payment_pending': "⏳ لا تزال عملية الدفع الخاصة بك معلقة. معرف الطلب: {order_id}\n تاكد من دفع المبلغ المطلوب الى المحفظة الاتية: {pay_address}\nسنقوم بإعلامك بمجرد تأكيد الدفع.",
-        'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الطلب: {order_id} ",
+        'already_have_pending_payment': "⚠️ لديك دفع معلق نشط بالفعل. معرف الطلب: {order_id}\n يرجى إتمام الدفع عبر عنوان المحفظة الموجود أدناه:\n{pay_address}",
         'help_message': "أهلاً بك في بوت OWL CAB Subscriptions! إليك الأوامر التي يمكنك استخدامها:\n\n"
                         "/start - لبدء التفاعل مع البوت.\n"
                         "/subscribe - لاشتراك في خدمة OWL CAB.\n"
@@ -231,7 +229,7 @@ Made in Saudi Arabia 🇸🇦💚
         'payment_successful': "✅🥳🤩 Payment confirmed successfully! Your subscription is now active. \n Order ID: {order_id},\n Duration: {duration} Month,\n Channel Link: {channel_link}.\n===========\n (✅🥳🤩تم تأكيد الدفع بنجاح! تم تفعيل الاشتراك.\n معرف الطلب: {order_id},\n المدة: {duration} شهر,\n رابط القناة: {channel_link}.)",
         'payment_failed_cancelled': "❌ Payment failed or cancelled. Please try again.\n======\n (فشل أو إلغاء الدفع. يرجى المحاولة مرة أخرى.)",
         'payment_pending': "⏳ Your payment is still pending. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}\n\nWe will notify you once the payment is confirmed.",
-        'already_have_pending_payment': "⚠️ You already have an active pending payment. Payment ID: {payment_id}\nPlease complete the payment via the payment address below:\n{pay_address}",   
+        'already_have_pending_payment': "⚠️ You already have an active pending payment. Order ID: {order_id}\nPlease complete the payment via the payment address below:\n{pay_address}",   
         'help_message': "Welcome to OWL CAB Subscriptions Bot! Here are the commands you can use:\n\n"
                         "/start - To start interacting with the bot.\n"
                         "/subscribe - To subscribe to the OWL CAB service.\n"
