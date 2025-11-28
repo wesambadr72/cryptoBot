@@ -127,7 +127,7 @@ async def process_successful_payment(payment_id, user_id, channel_link, duration
     add_subscriber(user_id, None, duration, duration_type='months', subscription_type=plan_name, payment_reference=payment_id) # إضافة المشترك هنا، وتمرير None لـ username    
     logger.info(f"Subscriber {user_id} added/updated with plan {plan_name} for {duration} months.")
 
-    await bot.send_message(user_id, MESSAGES['ar']['payment_successful'].format(payment_id=payment_id, duration=duration, channel_link=channel_link))
+    await bot.send_message(user_id, MESSAGES['ar']['payment_successful'].format(order_id=order_id, duration=duration, channel_link=CHANNEL_LINK))
     logger.info(f"Confirmation message sent to user {user_id}.")
 
 async def process_failedOrCancelled_payment(payment_id, user_id, order_id):

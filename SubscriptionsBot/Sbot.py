@@ -254,8 +254,8 @@ async def check_payment(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         duration = int(parts[3]) # duration هو الجزء الثالث من order_id
 
         # استدعاء الدالة المركزية لمعالجة الدفع الناجح
-        process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id)
-        await update.message.reply_text(MESSAGES[lang_code]['payment_successful'])
+        process_successful_payment(pending_payment[6], user_id, CHANNEL_LINK, duration, plan_id,order_id=order_id)
+        await update.message.reply_text(MESSAGES[lang_code]['payment_successful'].format(order_id=order_id, duration=duration, CHANNEL_LINK=CHANNEL_LINK))
         del context.user_data['last_order_id']
 
         logger.info(f"Successful payment {order_id} processed for user {user_id}.")

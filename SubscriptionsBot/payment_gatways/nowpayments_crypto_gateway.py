@@ -21,6 +21,7 @@ class NOWPaymentsCryptoGateway:
         payment_response = self.client.create_payment(
                 price_amount=plan_price,
                 price_currency='usd',
+                pay_amount = plan_price,
                 pay_currency='usdtton',
                 order_id=order_id,
                 order_description=f'{plan_duration} شهر اشتراك',
