@@ -88,6 +88,10 @@ async def handle_payment_webhook():
             logger.info(f"Subscription activated and user notified for payment {payment_id}.")
 
             return jsonify({'status': 'success'}), 200
+        elif payment_status == 'waiting':
+            
+            logger.info(f"Payment {payment_id} is still waiting for confirmation.")
+            return jsonify({'status': 'waiting'}), 200
 
         elif payment_status == 'failed' or payment_status == 'cancelled':
             logger.info(f"Payment {payment_id} failed or cancelled. Deactivating subscription for user {order_id}.")
