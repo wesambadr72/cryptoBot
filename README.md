@@ -1,6 +1,8 @@
 # Crypto Assistant Bot 🚀
 
 A Telegram bot built with Python to help users track cryptocurrency news, set price alerts, manage portfolios, and simulate trades.
+For try go to:https://t.me/owlcab
+
 
 ## Features 🌟
 
